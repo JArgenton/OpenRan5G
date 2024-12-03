@@ -35,7 +35,7 @@ def iperf3_output(data, protocol):
         "protocol": protocol,
         "parameters": {
             "server": data["start"]["connected"][0]["remote_host"],
-            "port": data["start"]["test_start"]["port"],
+            #"port": data["start"]["connected"][0]["port"],
             "duration_seconds": data["start"]["test_start"]["duration"]
         },
 
@@ -63,7 +63,7 @@ def iperf3_output(data, protocol):
 
 if __name__ == "__main__":
     try:
-        server = "192.168.0.1"
+        server = "192.168.18.44"
         duration = 10
         protocol = "UDP"  # TCP
         
@@ -71,6 +71,8 @@ if __name__ == "__main__":
 
         output_dir = "../results" #dir de saida
         output_file = os.path.join(output_dir, "iperf3_results.json")
+        
+        os.makedirs(output_dir, exist_ok=True)
 
         with open(output_file, "w") as file:
             json.dump(result, file, indent=4)

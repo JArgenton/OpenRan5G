@@ -1,7 +1,6 @@
 import subprocess
 import json
 import datetime
-import logging
 import os
 
 
@@ -49,10 +48,13 @@ def ping_output(output, target, count):
 if __name__ == "__main__":
     result = run_ping()
 
-    output_dir = "../results" #dir de saida (as vzs da problema, merda do python)
+    output_dir = "../results"  # Diretório de saída
     output_file = os.path.join(output_dir, "ping_results.json")
+
+    os.makedirs(output_dir, exist_ok=True)
 
     with open(output_file, "w") as f:
         json.dump(result, f, indent=4)
 
     print(f"Resultados salvos em '{output_file}'.")
+
