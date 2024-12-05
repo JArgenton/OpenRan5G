@@ -3,7 +3,7 @@ import json
 from datetime import datetime, timezone
 import os
 
-def run_iperf3(server, duration, protocol="TCP", port=5201):
+def run_iperf3(server, duration,size=512, protocol="TCP", port=5201):
     """
     Executa o iperf3 e salva os resultados em JSON.
         server: IP ou hostname do servidor.
@@ -12,7 +12,7 @@ def run_iperf3(server, duration, protocol="TCP", port=5201):
         port: Porta a ser usada no servidor.
     """
 
-    command = ["iperf3", "-c", server, "-p", str(port), "-t", str(duration), "--json"]
+    command = ["iperf3", "-c", server, "-p", str(port), "-t", str(duration), "-l" ,str(size),"--json"]
 
     if protocol.upper() == "UDP": #verifica se estamos medindo udp e add a flag necessaria
         command.append("--udp")
@@ -35,8 +35,8 @@ def iperf3_output(data, protocol):
         "protocol": protocol,
         "parameters": {
             "server": data["start"]["connected"][0]["remote_host"],
-            #"port": data["start"]["connected"][0]["port"],
-            "duration_seconds": data["start"]["test_start"]["duration"]
+            "duration_seconds": data["start"]["test_start"]["duration"],
+            "packet_size": data["start"]["test_start"]["blksize"]
         },
 
         "results": {}
@@ -51,11 +51,14 @@ def iperf3_output(data, protocol):
 
     elif protocol.upper() == "UDP": #dados especificos do UDP
         stream = data["end"]["streams"][0]["udp"]
+
         metrics["results"] = {
             "bits_per_second": stream["bits_per_second"],
             "lost_packets": stream["lost_packets"],
             "lost_percent": stream["lost_percent"],
-            "bytes_transferred": stream["bytes"]
+            "bytes_transferred": stream["bytes"],
+            "Jitter": stream["jitter_ms"],
+            "packets": stream["packets"]
         }
     
     return metrics
@@ -63,11 +66,12 @@ def iperf3_output(data, protocol):
 
 if __name__ == "__main__":
     try:
-        server = "192.168.18.44"
+        server = "10.181.1.42"
         duration = 10
         protocol = "UDP"  # TCP
+        size = 512*3
         
-        result = run_iperf3(server, duration, protocol=protocol)
+        result = run_iperf3(server, duration,size, protocol=protocol)
 
         output_dir = "../results" #dir de saida
         output_file = os.path.join(output_dir, "iperf3_results.json")

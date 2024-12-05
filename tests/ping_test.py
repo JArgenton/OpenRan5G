@@ -46,7 +46,7 @@ def ping_output(output, target, count):
             }
 
 if __name__ == "__main__":
-    result = run_ping()
+    result = run_ping("10.181.1.42")
 
     output_dir = "../results"  # Diretório de saída
     output_file = os.path.join(output_dir, "ping_results.json")
