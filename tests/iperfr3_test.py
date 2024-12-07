@@ -57,7 +57,7 @@ def iperf3_output(data, protocol):
             "lost_packets": stream["lost_packets"],
             "lost_percent": stream["lost_percent"],
             "bytes_transferred": stream["bytes"],
-            "Jitter": stream["jitter_ms"],
+            "Jitter": stream["jitter_ms"],  
             "packets": stream["packets"]
         }
     
