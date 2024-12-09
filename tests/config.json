@@ -1,0 +1,36 @@
+{
+
+"configuration":{
+    "server": "10.181.7.121",
+
+    "test": [{
+        "iperf3": {
+            "packet-size": "512",
+            "duration": "10",
+            "protocol": "UDP"
+        },
+        "ping": {
+            "package-count": 10
+        }
+    },
+    {
+        "iperf3": {
+            "packet-size": "1024",
+            "duration": "10",
+            "protocol": "UDP"
+        },
+        "ping": {
+            "package-count": 10
+        }
+    },
+    {
+        "iperf3": {
+            "packet-size": "2048",
+            "duration": "10",
+            "protocol": "TCP"
+        },
+        "ping": {
+            "package-count": 5
+        }
+    }]
+}}
