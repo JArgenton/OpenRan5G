@@ -55,7 +55,7 @@ if __name__ == "__main__":
         iperf3 = test['iperf3']
         ping = test['ping']
 
-        results = run_tests(index, server, iperf3, ping)
+        results = run_tests(server, iperf3, ping)
 
         save_tests(index, results, iperf3_dir, ping_dir)
 
