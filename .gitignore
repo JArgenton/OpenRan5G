@@ -1,5 +1,9 @@
 *.json
 
 /results
+
 tests/config.json
-tests/__pycache__/iperfr3_test.cpython-38.pyc
+
+*.pyc
+
+__pycache__/
