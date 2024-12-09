@@ -5,7 +5,7 @@ from ping_test import run_ping
 from configuration import Configuration
 from datetime import datetime
 
-def save_tests(results, iperf3_dir, ping_dir):
+def save_tests(index, results, iperf3_dir, ping_dir):
 
     os.makedirs(iperf3_dir, exist_ok=True)
     os.makedirs(ping_dir, exist_ok=True)
@@ -55,9 +55,9 @@ if __name__ == "__main__":
         iperf3 = test['iperf3']
         ping = test['ping']
 
-        results = run_tests(server, iperf3, ping)
+        results = run_tests(index, server, iperf3, ping)
 
-        save_tests(results, iperf3_dir, ping_dir)
+        save_tests(index, results, iperf3_dir, ping_dir)
 
         
 
