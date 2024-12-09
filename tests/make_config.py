@@ -22,8 +22,9 @@ def make_config(ip, size, tcp=False):
     return config
 
 if __name__ == "__main__":
+    output_dir = "./tests"
+    output_file = os.path.join(output_dir, "config.json")
 
-    output_file = "config.json"
     with open(output_file, "w") as file:
         json.dump(make_config("10.181.1.42", 10), file, indent=4)
 
