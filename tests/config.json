@@ -1,36 +1,105 @@
 {
-
-"configuration":{
     "server": "10.181.1.42",
-
-    "test": [{
-        "iperf3": {
-            "packet-size": "512",
-            "duration": "10",
-            "protocol": "UDP"
+    "tests": [
+        {
+            "iperf3": {
+                "packet-size": "64",
+                "duration": "10",
+                "protocol": "UDP"
+            },
+            "ping": {
+                "package-count": 10
+            }
         },
-        "ping": {
-            "package-count": 10
-        }
-    },
-    {
-        "iperf3": {
-            "packet-size": "1024",
-            "duration": "10",
-            "protocol": "UDP"
+        {
+            "iperf3": {
+                "packet-size": "128",
+                "duration": "10",
+                "protocol": "UDP"
+            },
+            "ping": {
+                "package-count": 10
+            }
         },
-        "ping": {
-            "package-count": 10
-        }
-    },
-    {
-        "iperf3": {
-            "packet-size": "2048",
-            "duration": "60",
-            "protocol": "TCP"
+        {
+            "iperf3": {
+                "packet-size": "256",
+                "duration": "10",
+                "protocol": "UDP"
+            },
+            "ping": {
+                "package-count": 10
+            }
         },
-        "ping": {
-            "package-count": 60
+        {
+            "iperf3": {
+                "packet-size": "512",
+                "duration": "10",
+                "protocol": "UDP"
+            },
+            "ping": {
+                "package-count": 10
+            }
+        },
+        {
+            "iperf3": {
+                "packet-size": "1024",
+                "duration": "10",
+                "protocol": "UDP"
+            },
+            "ping": {
+                "package-count": 10
+            }
+        },
+        {
+            "iperf3": {
+                "packet-size": "2048",
+                "duration": "10",
+                "protocol": "UDP"
+            },
+            "ping": {
+                "package-count": 10
+            }
+        },
+        {
+            "iperf3": {
+                "packet-size": "4096",
+                "duration": "10",
+                "protocol": "UDP"
+            },
+            "ping": {
+                "package-count": 10
+            }
+        },
+        {
+            "iperf3": {
+                "packet-size": "8192",
+                "duration": "10",
+                "protocol": "UDP"
+            },
+            "ping": {
+                "package-count": 10
+            }
+        },
+        {
+            "iperf3": {
+                "packet-size": "16384",
+                "duration": "10",
+                "protocol": "UDP"
+            },
+            "ping": {
+                "package-count": 10
+            }
+        },
+        {
+            "iperf3": {
+                "packet-size": "32768",
+                "duration": "10",
+                "protocol": "UDP"
+            },
+            "ping": {
+                "package-count": 10
+            }
         }
-    }]
-}}
+    ]
+}
