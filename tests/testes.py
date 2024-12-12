@@ -37,10 +37,10 @@ def get_formatted_date():
     return (f"{formatted_date}_ {formatted_time}")
 
 if __name__ == "__main__":
-    with open('config.json', 'r') as file:
+    with open('tests/config.json', 'r') as file:
         data = json.load(file)
     
-    output_dir = "../results"
+    output_dir = "./results"
     os.makedirs(output_dir, exist_ok=True)
 
     date = get_formatted_date()
@@ -48,9 +48,9 @@ if __name__ == "__main__":
     iperf3_dir = os.path.join(output_dir, f"iperf3_results_{date}")
     ping_dir = os.path.join(output_dir, f"ping_results_{date}")
 
-    server = data["configuration"]["server"]
+    server = data["server"]
 
-    for index, test in enumerate(data['configuration']['test'], start=0):
+    for index, test in enumerate(data['test'], start=0):
         
         iperf3 = test['iperf3']
         ping = test['ping']
