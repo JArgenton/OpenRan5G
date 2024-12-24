@@ -37,7 +37,7 @@ def get_formatted_date():
     return (f"{formatted_date}_ {formatted_time}")
 
 if __name__ == "__main__":
-    with open('tests/config.json', 'r') as file:
+    with open('config.json', 'r') as file:
         data = json.load(file)
     
     output_dir = "./results"
