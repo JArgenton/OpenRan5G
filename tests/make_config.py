@@ -19,12 +19,11 @@ def make_config(ip, size, tcp=False):
                 "package-count": 10       
             }
         })
-    return config
-
-if __name__ == "__main__":
     output_dir = "./tests"
     output_file = os.path.join(output_dir, "config.json")
-
     with open(output_file, "w") as file:
-        json.dump(make_config("10.181.9.101", 5), file, indent=4)
+        json.dump(config, file, indent=4)
+
+
+    
 

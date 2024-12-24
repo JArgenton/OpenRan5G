@@ -1,49 +1,9 @@
 {
-    "server": "10.181.9.101",
+    "server": "192.168.1.105",
     "test": [
         {
             "iperf3": {
                 "packet-size": "64",
-                "duration": "10",
-                "protocol": "UDP"
-            },
-            "ping": {
-                "package-count": 10
-            }
-        },
-        {
-            "iperf3": {
-                "packet-size": "128",
-                "duration": "10",
-                "protocol": "UDP"
-            },
-            "ping": {
-                "package-count": 10
-            }
-        },
-        {
-            "iperf3": {
-                "packet-size": "256",
-                "duration": "10",
-                "protocol": "UDP"
-            },
-            "ping": {
-                "package-count": 10
-            }
-        },
-        {
-            "iperf3": {
-                "packet-size": "512",
-                "duration": "10",
-                "protocol": "UDP"
-            },
-            "ping": {
-                "package-count": 10
-            }
-        },
-        {
-            "iperf3": {
-                "packet-size": "1024",
                 "duration": "10",
                 "protocol": "UDP"
             },

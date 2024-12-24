@@ -2,8 +2,7 @@ import matplotlib.pyplot as plt
 import os
 import json
 
-def plot_packet_packetSize():
-    path = "./results/iperf3_results_12-12_ 14-45"
+def plot_packet_packetSize(path, date):
     x = []
     y = []
     for file in os.listdir(path):
@@ -19,7 +18,13 @@ def plot_packet_packetSize():
     plt.ylabel('Lost Packets', fontsize=12)  # Rótulo do eixo Y
     plt.grid(True, which='both', linestyle='--', linewidth=0.5)
     plt.tight_layout()
+    base_dir = "./results"
+    plot_dir = os.path.join(base_dir, f"plots_{date}")
+    os.makedirs(plot_dir, exist_ok=True)
+    output_file = os.path.join(plot_dir, f"packetxpsize_plot.jpg")
+    plt.savefig(output_file)
     plt.show()
+
 
 if __name__ == "__main__":
     plot_packet_packetSize()

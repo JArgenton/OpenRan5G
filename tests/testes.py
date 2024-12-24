@@ -4,6 +4,8 @@ from iperfr3_test import run_iperf3
 from ping_test import run_ping
 from configuration import Configuration
 from datetime import datetime
+from plotGraphic import plot_packet_packetSize
+from make_config import make_config
 
 def save_tests(index, results, iperf3_dir, ping_dir):
 
@@ -37,6 +39,9 @@ def get_formatted_date():
     return (f"{formatted_date}_ {formatted_time}")
 
 if __name__ == "__main__":
+    ip = input("Insira o ip: ")
+    num_packet = int(input("Insira a quantidade de pacotes do teste: "))
+    make_config(ip, num_packet)
     with open('config.json', 'r') as file:
         data = json.load(file)
     
@@ -58,6 +63,8 @@ if __name__ == "__main__":
         results = run_tests(server, iperf3, ping)
 
         save_tests(index, results, iperf3_dir, ping_dir)
+
+    plot_packet_packetSize(iperf3_dir, date)
 
         
 
