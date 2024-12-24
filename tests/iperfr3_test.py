@@ -1,6 +1,6 @@
 import subprocess
 import json
-from datetime import datetime, timezone
+from configuration.configuration import Configuration
 import os
 
 def run_iperf3(server, duration,size=512, protocol="TCP", port=5201):
@@ -28,9 +28,9 @@ def run_iperf3(server, duration,size=512, protocol="TCP", port=5201):
 
 
 def iperf3_output(data, protocol):
-
+    configuration = Configuration.getObject()
     metrics = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": configuration.get_formated_date(),
         "test_type": "bandwidth",
         "protocol": protocol,
         "parameters": {

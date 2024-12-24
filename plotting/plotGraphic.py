@@ -24,7 +24,3 @@ def plot_packet_packetSize(path, date):
     output_file = os.path.join(plot_dir, f"packetxpsize_plot.jpg")
     plt.savefig(output_file)
     plt.show()
-
-
-if __name__ == "__main__":
-    plot_packet_packetSize()

@@ -1,6 +1,7 @@
 
-/results
-
+/results/*
+/configuration/tests.json
 *.pyc
-*.json
+
 __pycache__/
+

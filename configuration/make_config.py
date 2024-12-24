@@ -1,7 +1,9 @@
 import json
 import os
+from . configuration import Configuration
 
 def make_config(ip, size, tcp=False):
+    configuration = Configuration.getObject()
     config = {}
     config["server"] = str(ip)
     config["test"] = []
@@ -19,8 +21,8 @@ def make_config(ip, size, tcp=False):
                 "package-count": 10       
             }
         })
-    output_dir = "./tests"
-    output_file = os.path.join(output_dir, "config.json")
+    output_file = configuration.parameters_path
+    
     with open(output_file, "w") as file:
         json.dump(config, file, indent=4)
 

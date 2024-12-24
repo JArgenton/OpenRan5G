@@ -1,0 +1,11 @@
+{
+    "configuration":{
+        "tests":{
+            "parameters-path": "configuration/tests.json",
+            "output-iperf": "./results/iperf3",
+            "output-ping": "./results/ping",
+            "ping-index": 1,
+            "iperf-index": 0
+        }
+    }
+}

@@ -1,7 +1,7 @@
 import subprocess
 import json
-import datetime
 import os
+from configuration.configuration import Configuration
 
 
 def run_ping(target="8.8.8.8", count=10):
@@ -21,7 +21,7 @@ def run_ping(target="8.8.8.8", count=10):
 
 
 def ping_output(output, target, count):
-
+    configuration = Configuration.getObject()
     lines = output.split("\n")
     stats_line = [line for line in lines if "rtt" in line or "min/avg/max" in line]
 
@@ -31,7 +31,7 @@ def ping_output(output, target, count):
         min_latency, avg_latency, max_latency = metrics[:3]
 
         return {
-            "timestamp": datetime.datetime.now().isoformat(),
+            "timestamp": configuration.get_formated_date(),
             "test_type": "latency",
             "tool": "ping",
             "parameters": {
