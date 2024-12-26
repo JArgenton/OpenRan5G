@@ -31,14 +31,11 @@ class Configuration:
             pass    
     def make_config(self, packet_size, duration, protocol, packet_count):
         config = {
-            "iperf3": {
+            
                 "packet-size":packet_size ,
                 "duration": duration,
-                "protocol": protocol
-            },
-            "ping": {
+                "protocol": protocol,
                 "package-count": packet_count       
-            }
         }
         output_file = self.parameters_path
         
