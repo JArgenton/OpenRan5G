@@ -11,10 +11,10 @@ class Configuration:
     def __init__(self):
         self.date = None
         self.parameters_path = None
-        self.output_iperf = None
-        self.output_ping = None
+        self.output_file = None
         self.ping_index = None
         self.iperf_index = None
+        self.std_test_file = None
 
     def get_formated_date(self):
         if self.date == None:
@@ -24,13 +24,37 @@ class Configuration:
             self.date = (f"{formatted_date}_{formatted_time}")
         return self.date
 
+    def clean_tests(self):
+        target = self.parameters_path
+        with open(target, 'w') as file:
+            #acabar tlg
+            pass    
+    def make_config(self, packet_size, duration, protocol, packet_count):
+        config = {
+            "iperf3": {
+                "packet-size":packet_size ,
+                "duration": duration,
+                "protocol": protocol
+            },
+            "ping": {
+                "package-count": packet_count       
+            }
+        }
+        output_file = self.parameters_path
+        
+        with open(output_file, "r+") as file:
+            tests = json.load(file)
+            tests["tests"].append(config)            
+            file.seek(0) #volta ao inicio do arquivo, precisa porque o r+ inicia a escrita do fim do arquivo, e nos precisamos reescrever tudo oss!
+            json.dump(tests, file, indent=4)
+
 
     @staticmethod
     def loadFromJson():
         with open('configuration/config.json', 'r') as file:
           data =  json.load(file)
 
-        return data
+        return data 
 
     def getObject():
         if Configuration._instance is None:
@@ -39,9 +63,9 @@ class Configuration:
 
             instance = Configuration._instance
             instance.parameters_path = data["configuration"]["tests"]["parameters-path"]
-            instance.output_iperf = data["configuration"]["tests"]["output-iperf"]
-            instance.output_ping = data["configuration"]["tests"]["output-ping"]
+            instance.output_file= data["configuration"]["tests"]["output-file"]
             instance.ping_index = data["configuration"]["tests"]["ping-index"]
             instance.iperf_index = data["configuration"]["tests"]["iperf-index"]
+            instance.std_test_file = data["configuration"]["std-test-file"]
            
         return Configuration._instance  

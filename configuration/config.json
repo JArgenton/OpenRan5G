@@ -2,10 +2,12 @@
     "configuration":{
         "tests":{
             "parameters-path": "configuration/tests.json",
-            "output-iperf": "./results/iperf3",
-            "output-ping": "./results/ping",
+            "output-file": "./results/",
             "ping-index": 1,
             "iperf-index": 0
+        },
+        "std-test-file":{
+            "tests": []
         }
     }
 }
