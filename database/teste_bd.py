@@ -27,25 +27,20 @@ def build_table(self):
 def insert_data(self, data):
 
     date = data["timestamp"]
-    index 
-    {
-    "timestamp": "24-12_13-53",
-    "test_type": "bandwidth",
-    "protocol": "UDP",
-    "parameters": {
-        "server": "192.168.1.14",
-        "duration_seconds": 10,
-        "packet_size": 64
-    },
-    "results": {
-        "bits_per_second": 1048513.0566537655,
-        "lost_packets": 0,
-        "lost_percent": 0,
-        "bytes_transferred": 1310656,
-        "Jitter": 0.02100033366138135,
-        "packets": 20479
-    }
-}   
+    test_type = data["test_type"]
+    protocol = data["protocol"]
+    server = data["parameters"]["server"]
+    duration_seconds = data["parameters"]["duration_seconds"]
+    packet_size = data["parameters"]["packet_size"]
+    bits_per_second = data["results"]["bits_per_second"]
+    lost_packets = data["results"]["lost_packets"]
+    lost_percent = data["results"]["lost_percent"]
+    bytes_transferred = data["results"]["bytes_transferred"]
+    jitter = data["results"]["Jitter"]
+    packets = data["results"]["packets"]
+
+    #TODO -> organizar por protocolo
+
 
     self.cursor.execute(
         '''
@@ -57,7 +52,7 @@ def insert_data(self, data):
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''',
         (
-            date, test_index, protocol, test_type, duration_seconds, packet_size,
+            date, protocol, test_type, duration_seconds, packet_size,
             bits_per_second, lost_packets, lost_percent, bytes_transferred,
             jitter, packets, retransmits
         )
