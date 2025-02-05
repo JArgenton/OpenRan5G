@@ -1,10 +1,16 @@
 import sqlite3
-
-class DataBase:
+import json
+class Database:
+    _instance = None
     def __init__(self):
         self.conn = sqlite3.connect('results.db')
         self.cursor = self.conn.cursor()
         self.__build_table__()
+
+    def get_object():
+        if Database._instance == None:
+            Database._instance = Database()
+        return Database._instance
 
     def __build_table__(self):
         self.cursor.execute('''
@@ -30,7 +36,9 @@ class DataBase:
             max_latency REAL
         )''')
 
-    def add_tests_to_database(self, data):
+    def add_tests_to_database(self, path):
+        with open(path, 'r')as file:
+            data = json.load(file)
         for result in data["tests"]:
             self.__insert_data__(result)
 
@@ -81,3 +89,10 @@ class DataBase:
             self.__extract_data_from_json__(data)
         )
         self.conn.commit()
+
+    def print_all_data(self): #func do gepete, nem olhei
+        self.cursor.execute('SELECT * FROM testes')
+        rows = self.cursor.fetchall()  # Retorna todos os registros da tabela
+
+        for row in rows:
+            print(row)

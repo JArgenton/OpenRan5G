@@ -50,7 +50,6 @@ class Configuration:
     def loadFromJson():
         with open('configuration/config.json', 'r') as file:
           data =  json.load(file)
-
         return data 
 
     def getObject():

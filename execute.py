@@ -4,10 +4,12 @@ from tests.iperfr3_test import run_iperf3
 from tests.ping_test import run_ping
 from configuration.configuration import Configuration
 from plotting.plotGraphic import plot_packet_packetSize
+from database.teste_bd import Database
 
 class Executor():
     def __init__(self):
         self.configuration = Configuration.getObject()
+        self.database = Database.get_object()
 
     def save_tests(self, results, output_file):
         ping = int(self.configuration.ping_index) #1
@@ -76,7 +78,7 @@ class Executor():
         
         server = self.build_tests()
         output_file = self.build_save_file()
-
+        
         with open('configuration/tests.json', 'r') as file:
             data = json.load(file)
 
@@ -86,6 +88,8 @@ class Executor():
 
             self.save_tests(results, output_file)
 
+        self.database.add_tests_to_database(output_file)
+        self.database.print_all_data()
         #plot_packet_packetSize(iperf3_dir, date)
 
 if __name__ == "__main__":
