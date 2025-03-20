@@ -3,7 +3,6 @@ import os
 from tests.iperfr3_test import run_iperf3
 from tests.ping_test import run_ping
 from configuration.configuration import Configuration
-from plotting.plotGraphic import plot_packet_packetSize
 from database.teste_bd import Database
 
 class Executor():

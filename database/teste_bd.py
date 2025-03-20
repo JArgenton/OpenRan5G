@@ -96,3 +96,14 @@ class Database:
 
         for row in rows:
             print(row)
+
+    def get_querry(self, querry):
+        self.cursor.execute(querry)
+        return self.cursor.fetchall()
+
+
+
+
+if __name__ == '__main__':
+    database = Database.get_object()
+    database.print_all_data()
