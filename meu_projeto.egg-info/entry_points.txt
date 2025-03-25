@@ -1,0 +1,3 @@
+[console_scripts]
+teste_open = programer.main:main
+
