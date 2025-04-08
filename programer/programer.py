@@ -1,28 +1,62 @@
-from execute import Executor as exec
-import os 
+from configuration.configuration import Configuration
+import os
 import json
 
-class Programer():
+class Programmer:
 
     def __init__(self):
-        pass
-    
-    def create_routine():
-        print("/////////////////////// - CONFIGURAÇAO DE ROTINA - /////////////////////// \n")
+        self.configuration = Configuration.getObject()
 
-        dirs_name = str(input("QUAL SERA O NOME DA ROTINA? \n"))
-    os.mkdir("programer/routines/{dirs_name}")
+    def insert_tests(self, dirs_name):
+        packet_size = int(input("packet size: "))
+        duration = int(input("duration: "))
+        protocol = str(input("protocol: ")).upper()
+        package_count = int(input("package count: "))
+
+        self.configuration.make_config(f"programer/routines/{dirs_name}/routine", packet_size, duration, protocol, package_count)
+
+        print("////////////////////////// - TESTE INSERIDO - //////////////////////////")
+
+    def create_routine(self):
+        print("/////////////////////// - CONFIGURAÇÃO DE ROTINA - /////////////////////// \n")
+        
+        dirs_name = input("QUAL SERÁ O NOME DA ROTINA? \n")
+        os.mkdir(f"programer/routines/{dirs_name}")
+        print("QUAIS TESTES DEVEM SER REALIZADOS PELA ROTINA \n")
+
+        print(" 1 - IPERF \n")
+        print(" 2 - PING \n")
+        print(" 3 - TODOS \n")
+        testes = input("")
+
+        with open(f"programer/routines/{dirs_name}/routine", 'w') as file:
+            json.dump(self.configuration.std_test_file, file, indent=4)
+
+        print("///////////////////////////////////////////////////////////////////////////\n")
+
+        inserir_novo_teste = True
+        counter = 0 
+
+        while inserir_novo_teste:
+            os.system("clear")
+
+            print("/////////////////////// - CRIAÇÃO DE TESTES - /////////////////////// \n")
+            print(f"A ROTINA {dirs_name} POSSUI {counter} TESTES CADASTRADOS \n \n")
+
+            self.insert_tests(dirs_name) 
+
+            counter += 1
+
+            os.system("clear")
+
+            print("1 - INSERIR NOVO TESTE \n")
+            print("2 - SAIR \n")
+            opcao = input("ESCOLHA UMA OPÇÃO: ")
+
+            if opcao == "2":
+                inserir_novo_teste = False
 
 
-    print("//////////////////////////////////////////////////////////////////////////\n")
-    
-    def build_tests(self):
-        ip = str(input("Insira o ip: "))
-
-        inserir_novo_teste = str(input("Deseja inserir um novo teste? \n S \n N \n")).upper()
-        if inserir_novo_teste == 'S':
-            with open(self.configuration.parameters_path, 'w') as file:
-                json.dump(self.configuration.std_test_file, file, indent=4)
-
-            self.insert_tests(inserir_novo_teste) #essa é a primeira vez que eu senti q um do while ia ser util, nao sei se isso existe em python e o gepete morreu
-        return ip
+if __name__ == '__main__':
+        programer = Programmer()
+        programer.create_routine()

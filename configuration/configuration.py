@@ -29,7 +29,7 @@ class Configuration:
         with open(target, 'w') as file:
             #acabar tlg
             pass    
-    def make_config(self, packet_size, duration, protocol, packet_count):
+    def make_config(self,target,  packet_size, duration, protocol, packet_count):
         config = {
             
                 "packet-size":packet_size ,
@@ -37,7 +37,7 @@ class Configuration:
                 "protocol": protocol,
                 "package-count": packet_count       
         }
-        output_file = self.parameters_path
+        output_file = target
         
         with open(output_file, "r+") as file:
             tests = json.load(file)
