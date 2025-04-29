@@ -1,0 +1,74 @@
+.wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    color: #ffffff;
+  }
+  
+  .parameters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    margin-top: 1rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  .actionButton {
+    padding: 0.8rem 1.5rem;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .actionButton:hover {
+    background-color: #43a047;
+    transform: scale(1.05);
+  }
+
+  .ipInput {
+    margin-top: 1.5rem;
+    padding: 0.6rem 1rem;
+    width: 220px;
+    font-size: 1rem;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    background-color: #1e1e1e;
+    color: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .ipInput:focus {
+    outline: none;
+    border-color: #81c784;
+    box-shadow: 0 0 0 2px rgba(129, 199, 132, 0.3);
+  }
+  
+  .ipInput::placeholder {
+    color: #aaa;
+  }
+
+  .inputWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
