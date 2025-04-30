@@ -4,10 +4,17 @@ import styles from "./style.module.css";
 interface ToggleButtonProps {
   label: string;
   onToggle: (label: string, active: boolean) => void;
+  active?: boolean;
+  setActive?: (value: boolean) => void;
 }
 
-export default function ToggleButton({ label, onToggle }: ToggleButtonProps) {
-  const [active, setActive] = useState(false);
+export default function ToggleButton({ label, onToggle, active: externalActive, setActive: externalSetActive }: ToggleButtonProps) {
+  // estado interno, usado se props não vierem
+  const [internalActive, setInternalActive] = useState(false);
+
+  // decide qual estado usar
+  const active = externalActive !== undefined ? externalActive : internalActive;
+  const setActive = externalSetActive || setInternalActive;
 
   const toggle = () => {
     const newState = !active;
