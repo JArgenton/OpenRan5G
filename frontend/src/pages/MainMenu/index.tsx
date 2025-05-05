@@ -7,9 +7,8 @@ export default function MainMenu(){
             <section className={style.wrapper}>
                 <h1 className={style.title}>Network Tester</h1>
                 <div className={style.container}>
-                    <MenuButton text="Run test" path="/run"/>
-                    <MenuButton text="Statistics" path=""/>
-                    <MenuButton text="Log" path=""/>
+                    <MenuButton text="Client" path="/client"/>
+                    <MenuButton text="Server" path="/server"/>
                 </div>
             </section>
         </>

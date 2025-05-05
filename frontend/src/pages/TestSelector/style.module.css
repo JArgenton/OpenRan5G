@@ -28,22 +28,7 @@
     justify-content: center;
     margin-top: 2rem;
   }
-  
-  .actionButton {
-    padding: 0.8rem 1.5rem;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .actionButton:hover {
-    background-color: #43a047;
-    transform: scale(1.05);
-  }
+
 
   .ipInput {
     margin-top: 1.5rem;

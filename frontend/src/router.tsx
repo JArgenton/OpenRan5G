@@ -1,7 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainMenu from "./pages/MainMenu";
-import RunTestTemplate from "./pages/RunTestTemplate";
 import TestSelector from "./pages/TestSelector";
+import ClientMenu from "./pages/ClientMenu";
+import ServerMenu from "./pages/ServerMenu";
+import LogPage from "./pages/LogPage";
+import StatisticsPage from "./pages/StatisticsPage";
 
 
 
@@ -10,14 +13,20 @@ const router = createBrowserRouter([
         path: "/",
         element: <MainMenu />
     },{
+        path: "/client",
+        element: <ClientMenu />
+    },{
+        path: "/server",
+        element: <ServerMenu />
+    },{
         path: "/run",
-        element: <RunTestTemplate />,
-        children:[
-            {
-                index: true,
-                element: <TestSelector />
-            }
-        ]
+        element: <TestSelector />
+    },{
+        path: "/log",
+        element: <LogPage />
+    },{
+        path: "/stats",
+        element: <StatisticsPage />
     }
 ])
 
