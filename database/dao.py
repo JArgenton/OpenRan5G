@@ -1,8 +1,9 @@
 import sqlite3
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
+from singleton import MetaSingleton
 
-class DAO(ABC):
+class DAO(ABC, metaclass=MetaSingleton):
     """data acess object"""
     def __init__(self, db_path: str = "app.db"):
         self._conn = sqlite3.connect(db_path)
@@ -11,11 +12,19 @@ class DAO(ABC):
     @property
     @abstractmethod
     def table_name(self) -> str:
-        ...
+        """
+        Deve retornar o nome da tabela.
+        Subclasses **precisam** sobrescrever este método.
+        """
+        raise NotImplementedError("Subclasse deve implementar table_name()")
 
     @abstractmethod
     def create_table(self) -> None:
-        ...
+        """
+        Deve criar a tabela no banco caso não exista.
+        Subclasses **precisam** sobrescrever este método.
+        """
+        raise NotImplementedError("Subclasse deve implementar create_table()") 
 
     def insert(self, data: Dict[str, Any]) -> None:
         """cara, isso gera uma fodendo Querry. 
