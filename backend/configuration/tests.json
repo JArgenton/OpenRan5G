@@ -1,0 +1,40 @@
+{
+    "tests": [
+        {
+            "packet-size": 32,
+            "duration": 10,
+            "protocol": "UDP",
+            "package-count": 100
+        },
+        {
+            "packet-size": 64,
+            "duration": 10,
+            "protocol": "UDP",
+            "package-count": 100
+        },
+        {
+            "packet-size": 128,
+            "duration": 10,
+            "protocol": "UDP",
+            "package-count": 100
+        },
+        {
+            "packet-size": 256,
+            "duration": 10,
+            "protocol": "UDP",
+            "package-count": 100
+        },
+        {
+            "packet-size": 512,
+            "duration": 10,
+            "protocol": "UDP",
+            "package-count": 100
+        },
+        {
+            "packet-size": 1024,
+            "duration": 10,
+            "protocol": "UDP",
+            "package-count": 100
+        }
+    ]
+}
