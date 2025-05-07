@@ -14,6 +14,7 @@ export default function ClientMenu(){
                     <MenuButton text="Run test" path="/run"/>
                     <MenuButton text="Statistics" path="/stats"/>
                     <MenuButton text="Log" path="/log"/>
+                    <MenuButton text="Routine" path="/routine"/>
                 </div>
             </section>
         </>

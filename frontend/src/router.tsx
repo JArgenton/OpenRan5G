@@ -5,6 +5,7 @@ import ClientMenu from "./pages/ClientMenu";
 import ServerMenu from "./pages/ServerMenu";
 import LogPage from "./pages/LogPage";
 import StatisticsPage from "./pages/StatisticsPage";
+import RoutinePage from "./pages/RoutinePage";
 
 
 
@@ -27,6 +28,9 @@ const router = createBrowserRouter([
     },{
         path: "/stats",
         element: <StatisticsPage />
+    },{
+        path: "/routine",
+        element: <RoutinePage />
     }
 ])
 
