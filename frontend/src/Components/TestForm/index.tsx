@@ -57,7 +57,8 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
       default: deflt
     }
     const tests: Test[]= []
-    for(let i=0; i< +ntests; i++){
+    const n = +ntests > 10 ? +ntests : 10
+    for(let i=0; i< +n; i++){
       tests.push(test)
     }
 
