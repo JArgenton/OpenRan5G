@@ -10,7 +10,6 @@ export default function DefaultHeader({title}: DHprops){
             <header>
                 <BackButton />
                 <h1 style ={{textAlign: "center"}}>{title}</h1>
-    
                 <hr />
             </header>
         </>

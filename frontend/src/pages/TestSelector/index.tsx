@@ -1,18 +1,18 @@
-import TestForm from "../../Components/TestForm";
+import TestForm, { Test } from "../../Components/TestForm";
 import DefaultHeader from "../../Components/DefaultHeader";
 
 
 export default function TestSelector() {
   
-  function handleSubmit(parameters: string[], protocol: boolean[]){
-    console.log(parameters, protocol)
+  function handleSubmit(test: Test[]){
+    console.log(test)
   }
 
   return (
     <>
       <DefaultHeader title="Run Test" />
       <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-        <TestForm onSubmit={handleSubmit} />
+        <TestForm onSubmit={handleSubmit} text="Run tests"/>
       </div>
     </>
   )

@@ -6,6 +6,7 @@ import ServerMenu from "./pages/ServerMenu";
 import LogPage from "./pages/LogPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import RoutinePage from "./pages/RoutinePage";
+import AddRoutine from "./pages/AddRoutine";
 
 
 
@@ -31,6 +32,9 @@ const router = createBrowserRouter([
     },{
         path: "/routine",
         element: <RoutinePage />
+    },{
+        path: "/addr",
+        element: <AddRoutine />
     }
 ])
 

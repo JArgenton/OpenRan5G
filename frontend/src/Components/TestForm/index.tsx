@@ -4,11 +4,21 @@ import style from "./style.module.css"
 import DefaultButton from "../../Components/DefaultButton";
 
 interface TestFormProps {
-  onSubmit: (parameters: string[], protocol: boolean[]) => void;
+  onSubmit: (test: Test[]) => void;
+  text: string;
 }
 
-export default function TestForm({ onSubmit }: TestFormProps) {
-  const [selecionados, setSelecionados] = useState<string[]>([]);
+export interface Test {
+  ip: string,
+  npackets: string,
+  tcp: boolean,
+  udp: boolean,
+  ping: boolean,
+  default: boolean
+}
+
+export default function TestForm({ onSubmit, text }: TestFormProps) {
+  const [ping, setPing] = useState<boolean>(false)
   const [ip, setIp] = useState("");
   const [npackets, setNpackets] = useState("");
   const [ntests, setNtests] = useState("");
@@ -16,15 +26,8 @@ export default function TestForm({ onSubmit }: TestFormProps) {
   const [tcp, setTcp] = useState(false);
   const [deflt, setDefault] = useState(false);
 
-  const handlePropSelector = (label: string, ativo: boolean) => {
-    setSelecionados(prev =>
-      ativo ? [...prev, label] : prev.filter(item => item !== label)
-    );
-  };
-
   const handleDefaultButton = (_: string, ativo: boolean) => {
-    setDefault(ativo);
-    setSelecionados([]);
+    setDefault(ativo);  
   };
 
   const handleTypeSelector = (label: string, ativo: boolean) => {
@@ -34,6 +37,9 @@ export default function TestForm({ onSubmit }: TestFormProps) {
         else setTcp(false);
       }
     }
+    else{
+      setPing(!ativo)
+    }
   };
 
   const handleRunButton = () => {
@@ -41,7 +47,21 @@ export default function TestForm({ onSubmit }: TestFormProps) {
         alert("Please fill in all required fields.");
         return;
     }
-    onSubmit([ip, npackets, ntests, ...selecionados], [tcp, udp, deflt]);
+    
+    const test: Test = {
+      ip,
+      npackets,
+      tcp,
+      udp,
+      ping,
+      default: deflt
+    }
+    const tests: Test[]= []
+    for(let i=0; i< +ntests; i++){
+      tests.push(test)
+    }
+
+    onSubmit(tests);
     setIp("");
     setNpackets("")
     setNtests("")
@@ -57,19 +77,9 @@ export default function TestForm({ onSubmit }: TestFormProps) {
               <h2 className={style.sectionTitle}>Select test types</h2>
               
               <div className={style.parameters}>
-                <ToggleButton label="Ping" onToggle={handlePropSelector} />
+                <ToggleButton label="Ping" onToggle={handleTypeSelector} />
                 <ToggleButton label="TCP" onToggle={handleTypeSelector} active={tcp} setActive={setTcp} />
                 <ToggleButton label="UDP" onToggle={handleTypeSelector} active={udp} setActive={setUdp} />
-              </div>
-            </>
-          )}
-
-          {(tcp || udp) && (
-            <>
-              <h2 className={style.sectionTitle}>Select test parameters</h2>
-              <div className={style.parameters}>
-                <ToggleButton label="Jitter" onToggle={handlePropSelector} />
-                {udp && <ToggleButton label="Packet Loss" onToggle={handlePropSelector} />}
               </div>
             </>
           )}
@@ -108,7 +118,7 @@ export default function TestForm({ onSubmit }: TestFormProps) {
         </div>
 
         <div className={style.actions}>
-          <DefaultButton text="Run Test" callback={handleRunButton} />
+          <DefaultButton text={text} callback={handleRunButton} />
         </div>
       </div>
     </>
