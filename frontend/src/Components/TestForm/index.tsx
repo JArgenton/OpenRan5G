@@ -19,12 +19,12 @@ export interface Test {
 
 export default function TestForm({ onSubmit, text }: TestFormProps) {
   const [ping, setPing] = useState<boolean>(false)
-  const [ip, setIp] = useState("");
-  const [npackets, setNpackets] = useState("");
-  const [ntests, setNtests] = useState("");
-  const [udp, setUdp] = useState(false);
-  const [tcp, setTcp] = useState(false);
-  const [deflt, setDefault] = useState(false);
+  const [ip, setIp] = useState<string>("");
+  const [npackets, setNpackets] = useState<string>("");
+  const [ntests, setNtests] = useState<string>("");
+  const [udp, setUdp] = useState<boolean>(false);
+  const [tcp, setTcp] = useState<boolean>(false);
+  const [deflt, setDefault] = useState<boolean>(false);
 
   const handleDefaultButton = (_: string, ativo: boolean) => {
     setDefault(ativo);  
@@ -38,7 +38,7 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
       }
     }
     else{
-      setPing(!ativo)
+      setPing(ativo)
     }
   };
 
@@ -57,7 +57,7 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
       default: deflt
     }
     const tests: Test[]= []
-    const n = +ntests > 10 ? +ntests : 10
+    const n = +ntests < 10 ? +ntests : 10
     for(let i=0; i< +n; i++){
       tests.push(test)
     }
