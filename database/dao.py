@@ -25,7 +25,7 @@ class DAO(ABC, metaclass=MetaSingleton):
         Subclasses **precisam** sobrescrever este método.
         """
         raise NotImplementedError("Subclasse deve implementar create_table()") 
-
+    
     def insert(self, data: Dict[str, Any]) -> None:
         """cara, isso gera uma fodendo Querry. 
         o **kwargs é um mapa que associa nomes a valores, exatamente como o insert de um banco

@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 
-class Configuration:
+class Configuration_:
     """Fiz meio de sacanagem, pois este nao faz muito sentido pensando em enviar os comando pelo terminal.
         Mesmo assim este sera util pois facilita o codigo, e eu estava pensando melhor quanto a cascar os 
         parametros via terminal, nao sera nada eficiente e escalavel, desse jeito fica mais facil realizar 
