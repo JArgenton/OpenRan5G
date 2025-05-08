@@ -1,0 +1,8 @@
+{
+    "x_path": "iperf_data.parameters.packet_size",
+    "y_path": "iperf_data.results.bits_per_second",
+    "x_label": "Packet Size (bytes)",
+    "y_label": "Bits per Second",
+    "color": "green",
+    "line_type": "--"
+}

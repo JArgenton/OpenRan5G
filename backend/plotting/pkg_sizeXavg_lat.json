@@ -1,0 +1,8 @@
+{
+    "x_path": "iperf_data.parameters.packet_size",
+    "y_path": "ping_data.results.avg_latency_ms",
+    "x_label": "Tamanho do Pacote (bytes)",
+    "y_label": "Latência Média (ms)",
+    "color": "#1f77b4",
+    "line_type": "-"
+}
