@@ -10,7 +10,10 @@ interface TestFormProps {
 
 export interface Test {
   ip: string,
-  npackets: string,
+  duration: string,
+  packetSize: string,
+  bandwidth: string,
+  pingPackets: string,
   tcp: boolean,
   udp: boolean,
   ping: boolean,
@@ -20,11 +23,14 @@ export interface Test {
 export default function TestForm({ onSubmit, text }: TestFormProps) {
   const [ping, setPing] = useState<boolean>(false)
   const [ip, setIp] = useState<string>("");
-  const [npackets, setNpackets] = useState<string>("");
+  const [duration, setDuration] = useState<string>("");
   const [ntests, setNtests] = useState<string>("");
   const [udp, setUdp] = useState<boolean>(false);
   const [tcp, setTcp] = useState<boolean>(false);
   const [deflt, setDefault] = useState<boolean>(false);
+  const [packetSize, setPacketSize] = useState<string>("")
+  const [count, setCount] = useState<string>("")
+  const [bandwidth, setBandwidth] = useState<string>("")
 
   const handleDefaultButton = (_: string, ativo: boolean) => {
     setDefault(ativo);  
@@ -43,14 +49,12 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
   };
 
   const handleRunButton = () => {
-    if (!ip || !ntests || (udp && !npackets)) {
-        alert("Please fill in all required fields.");
-        return;
-    }
-    
     const test: Test = {
       ip,
-      npackets,
+      duration,
+      packetSize,
+      bandwidth,
+      pingPackets: count,
       tcp,
       udp,
       ping,
@@ -64,8 +68,11 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
 
     onSubmit(tests);
     setIp("");
-    setNpackets("")
+    setDuration("")
     setNtests("")
+    setBandwidth("")
+    setCount("")
+    setPacketSize("")
   };
 
   return (
@@ -86,15 +93,39 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
           )}
 
           {udp && !deflt && (
-            <div className={style.inputWrapper}>
-              <input
-                type="text"
-                className={style.ipInput}
-                value={npackets}
-                onChange={(e) => setNpackets(e.target.value)}
-                placeholder="Select number of packets"
-              />
-            </div>
+            <>
+              <div className={style.inputWrapper}>
+                <input
+                  type="text"
+                  className={style.ipInput}
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                  placeholder="Select test duration"
+                />
+              </div>
+              <div className={style.inputWrapper}>
+                <input
+                  type="text"
+                  className={style.ipInput}
+                  value={packetSize}
+                  onChange={(e) => setPacketSize(e.target.value)}
+                  placeholder="Select packet size"
+                />
+              </div>
+            </>
+          )}
+          {(tcp || udp) && !deflt && (
+            <>
+              <div className={style.inputWrapper}>
+                <input
+                  type="text"
+                  className={style.ipInput}
+                  value={bandwidth}
+                  onChange={(e) => setBandwidth(e.target.value)}
+                  placeholder="Enter bandwidth"
+                />
+              </div>
+            </>
           )}
 
           <div className={style.inputWrapper}>
@@ -107,6 +138,17 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
             />
           </div>
 
+          {ping && !deflt && (
+              <div className={style.inputWrapper}>
+                <input
+                  type="text"
+                  className={style.ipInput}
+                  value={count}
+                  onChange={(e) => setCount(e.target.value)}
+                  placeholder="Number of ping packets"
+                />
+              </div>
+          )}
           <div className={style.inputWrapper}>
             <input
               type="text"
@@ -117,6 +159,7 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
             />
           </div>
         </div>
+        
 
         <div className={style.actions}>
           <DefaultButton text={text} callback={handleRunButton} />

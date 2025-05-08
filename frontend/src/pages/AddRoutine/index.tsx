@@ -17,7 +17,6 @@ export default function AddRoutine() {
         <>
             <DefaultHeader title="Routine" />
 
-            {/* 🧭 Aba de navegação */}
             <div className={style.tabWrapper}>
                 <div
                     className={`${style.tab} ${activeTab === "client" ? style.activeTab : ""}`}
@@ -33,7 +32,6 @@ export default function AddRoutine() {
                 </div>
             </div>
 
-            {/* 🧩 Conteúdo por aba */}
             {activeTab === "client" && (
                 <div style={{ display: 'flex', height: '100vh' }}>
                     <section style={{ width: '50%', padding: '2rem' }}>
@@ -56,7 +54,7 @@ export default function AddRoutine() {
                                 <div key={i}>
                                     <h2>{type}</h2>
                                     <p>Ip: {test.ip}</p>
-                                    {test.npackets && <p>Packet number: {test.npackets}</p>}
+                                    {test.packetSize && <p>Packet size: {test.packetSize}</p>}
                                     <hr />
                                 </div>
                             )

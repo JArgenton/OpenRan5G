@@ -35,6 +35,8 @@ const router = createBrowserRouter([
     },{
         path: "/addr",
         element: <AddRoutine />
+    },{
+        path: "/saved"
     }
 ])
 
