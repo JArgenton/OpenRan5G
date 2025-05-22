@@ -1,0 +1,38 @@
+{
+    "tests": [
+        {
+            "iperf_data": {
+                "timestamp": "05-02_15-44",
+                "test_type": "bandwidth",
+                "protocol": "UDP",
+                "parameters": {
+                    "server": "192.168.0.21",
+                    "duration_seconds": 20,
+                    "packet_size": 256
+                },
+                "results": {
+                    "bits_per_second": 1048567.9260269697,
+                    "lost_packets": 0,
+                    "lost_percent": 0,
+                    "bytes_transferred": 2621440,
+                    "Jitter": 0.0221404943454885,
+                    "packets": 10240
+                }
+            },
+            "ping_data": {
+                "timestamp": "05-02_15-44",
+                "test_type": "latency",
+                "tool": "ping",
+                "parameters": {
+                    "target": "192.168.0.21",
+                    "packet_count": 10
+                },
+                "results": {
+                    "min_latency_ms": 0.032,
+                    "avg_latency_ms": 0.068,
+                    "max_latency_ms": 0.135
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,58 @@
+.ipInput {
+    margin-top: 1.5rem;
+    padding: 0.6rem 1rem;
+    width: 220px;
+    font-size: 1rem;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    background-color: #1e1e1e;
+    color: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .ipInput:focus {
+    outline: none;
+    border-color: #81c784;
+    box-shadow: 0 0 0 2px rgba(129, 199, 132, 0.3);
+  }
+  
+  .ipInput::placeholder {
+    color: #aaa;
+  }
+  
+  .inputWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .buttonWrapper{
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .tabWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    border-bottom: 1px solid #555;
+  }
+  
+  .tab {
+    padding: 1rem 2rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: #ccc;
+    transition: color 0.2s;
+  }
+  
+  .tab:hover {
+    color: #fff;
+  }
+  
+  .activeTab {
+    border-bottom: 3px solid #4caf50;
+    color: #4caf50;
+  }
+  

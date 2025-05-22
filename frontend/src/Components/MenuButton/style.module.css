@@ -1,0 +1,22 @@
+.btn {
+    padding: 0.75rem 2rem;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 220px;    /* Limite máximo para manter visual bonito */
+    min-width: 160px;    /* Garante que não fique estreito demais */
+    height: 100%;
+    max-height: 110px;
+    min-height: 50px;
+  }
+  
+  .btn:hover {
+    background-color: #43a047;
+    transform: scale(1.05);
+    cursor: pointer;
+  }

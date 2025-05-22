@@ -1,0 +1,18 @@
+{
+    "timestamp": "2024-12-20T21:39:01.685879+00:00",
+    "test_type": "bandwidth",
+    "protocol": "UDP",
+    "parameters": {
+        "server": "192.168.68.113",
+        "duration_seconds": 10,
+        "packet_size": 64
+    },
+    "results": {
+        "bits_per_second": 1048514.1051561274,
+        "lost_packets": 0,
+        "lost_percent": 0,
+        "bytes_transferred": 1310656,
+        "Jitter": 0.02131387484489746,
+        "packets": 20479
+    }
+}

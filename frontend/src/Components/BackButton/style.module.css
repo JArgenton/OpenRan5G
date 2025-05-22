@@ -1,0 +1,16 @@
+.backBtn {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0.3rem 0.6rem;
+  }
+  
+  .backBtn:hover {
+    color: #fff;
+    text-decoration: underline;
+  }

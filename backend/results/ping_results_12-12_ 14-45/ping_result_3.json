@@ -1,0 +1,14 @@
+{
+    "timestamp": "2024-12-12T14:47:11.573057",
+    "test_type": "latency",
+    "tool": "ping",
+    "parameters": {
+        "target": "10.181.9.101",
+        "packet_count": 10
+    },
+    "results": {
+        "min_latency_ms": 0.022,
+        "avg_latency_ms": 0.058,
+        "max_latency_ms": 0.069
+    }
+}

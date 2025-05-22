@@ -1,0 +1,31 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3rem;
+    color: #f0f0f0;
+  }
+  
+  .statusSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    background-color: #1e1e1e;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .statusText {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .statusOn {
+    color: #4caf50; /* Verde */
+  }
+  
+  .statusOff {
+    color: #f44336; /* Vermelho */
+  }
