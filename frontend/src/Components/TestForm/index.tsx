@@ -29,7 +29,7 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
   const [tcp, setTcp] = useState<boolean>(false);
   const [deflt, setDefault] = useState<boolean>(false);
   const [packetSize, setPacketSize] = useState<string>("")
-  const [count, setCount] = useState<string>("")
+  const [PingPackets, setPingPackets] = useState<string>("")
   const [bandwidth, setBandwidth] = useState<string>("")
 
   const handleDefaultButton = (_: string, ativo: boolean) => {
@@ -54,12 +54,13 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
       duration,
       packetSize,
       bandwidth,
-      pingPackets: count,
+      pingPackets: PingPackets,
       tcp,
       udp,
       ping,
       default: deflt
     }
+
     const tests: Test[]= []
     const n = +ntests < 10 ? +ntests : 10
     for(let i=0; i< +n; i++){
@@ -71,7 +72,7 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
     setDuration("")
     setNtests("")
     setBandwidth("")
-    setCount("")
+    setPingPackets("")
     setPacketSize("")
   };
 
@@ -143,8 +144,8 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
                 <input
                   type="text"
                   className={style.ipInput}
-                  value={count}
-                  onChange={(e) => setCount(e.target.value)}
+                  value={PingPackets}
+                  onChange={(e) => setPingPackets(e.target.value)}
                   placeholder="Number of ping packets"
                 />
               </div>
