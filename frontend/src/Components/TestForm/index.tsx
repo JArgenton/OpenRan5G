@@ -99,8 +99,28 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
             </>
           )}
 
-          {udp && !deflt && (
+          <div className={style.inputWrapper}>
+            <input
+              type="text"
+              className={style.ipInput}
+              value={ip}
+              onChange={(e) => setIp(e.target.value)}
+              placeholder="Enter IP address"
+            />
+          </div>
+
+          {(tcp || udp) && !deflt && (
             <>
+              <div className={style.inputWrapper}>
+                <input
+                  type="text"
+                  className={style.ipInput}
+                  value={packetSize}
+                  onChange={(e) => setPacketSize(e.target.value)}
+                  placeholder="Select packet size"
+                />
+              </div>
+              
               <div className={style.inputWrapper}>
                 <input
                   type="text"
@@ -112,27 +132,6 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
               </div>
             </>
           )}
-          {(tcp || udp) && !deflt && (
-            <div className={style.inputWrapper}>
-              <input
-                type="text"
-                className={style.ipInput}
-                value={packetSize}
-                onChange={(e) => setPacketSize(e.target.value)}
-                placeholder="Select packet size"
-              />
-            </div>
-          )}
-
-          <div className={style.inputWrapper}>
-            <input
-              type="text"
-              className={style.ipInput}
-              value={ip}
-              onChange={(e) => setIp(e.target.value)}
-              placeholder="Enter IP address"
-            />
-          </div>
 
           {ping && !deflt && (
               <div className={style.inputWrapper}>
