@@ -26,6 +26,10 @@ def run_iperf3(server, duration,size=512, protocol="TCP", port=5201):
 
     return iperf3_output(output, protocol)
 
+def run_iperf3_server():
+    command = ["iperf3", "-s"]
+    subprocess.run(command)
+
 
 def iperf3_output(data, protocol):
     configuration = Configuration.getObject()

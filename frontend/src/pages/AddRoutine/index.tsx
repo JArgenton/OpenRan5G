@@ -45,9 +45,8 @@ export default function AddRoutine() {
                             let type = ""
                             if (test.default) type = "Default Test"
                             else {
-                                if (test.udp) type += "UDP "
-                                if (test.tcp) type += "TCP "
                                 if (test.ping) type += "PING "
+                                if(test.protocol !== 'none') type += test.protocol.toUpperCase()
                             }
 
                             return (

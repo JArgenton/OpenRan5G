@@ -27,16 +27,31 @@ class Configuration:
     def clean_tests(self):
         target = self.parameters_path
         with open(target, 'w') as file:
-            #acabar tlg
-            pass    
-    def make_config(self, packet_size, duration, protocol, packet_count):
-        config = {
-            
+            json.dump({"tests": []}, file, indent=4)  
+    
+    def make_config(self, packet_size, duration, protocol = "", packet_count = -1):
+        if packet_count == -1 and protocol == "":
+            print('Entrada de teste inválida')
+            return
+        
+        if(packet_count == -1):
+            config = {
+                "packet-size":packet_size ,
+                "duration": duration,
+                "protocol": protocol     
+            }
+        elif protocol == "":
+            config = {
+                "package-count": packet_count    
+            }
+        else:
+            config = {
                 "packet-size":packet_size ,
                 "duration": duration,
                 "protocol": protocol,
                 "package-count": packet_count       
-        }
+            }
+
         output_file = self.parameters_path
         
         with open(output_file, "r+") as file:
@@ -48,7 +63,7 @@ class Configuration:
 
     @staticmethod
     def loadFromJson():
-        with open('configuration/config.json', 'r') as file:
+        with open('backend/configuration/config.json', 'r') as file:
           data =  json.load(file)
         return data 
 
@@ -65,3 +80,4 @@ class Configuration:
             instance.std_test_file = data["configuration"]["std-test-file"]
            
         return Configuration._instance  
+    
