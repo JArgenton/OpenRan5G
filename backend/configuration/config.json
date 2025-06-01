@@ -1,7 +1,7 @@
 {
     "configuration":{
         "tests":{
-            "parameters-path": "configuration/tests.json",
+            "parameters-path": "backend/configuration/tests.json",
             "output-file": "./results/",
             "ping-index": 1,
             "iperf-index": 0

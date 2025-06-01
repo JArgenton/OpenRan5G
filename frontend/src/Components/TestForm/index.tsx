@@ -14,8 +14,7 @@ export interface Test {
   packetSize: string,
   bandwidth: string,
   pingPackets: string,
-  tcp: boolean,
-  udp: boolean,
+  protocol: string,
   ping: boolean,
   default: boolean
 }
@@ -49,14 +48,21 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
   };
 
   const handleRunButton = () => {
+    let protocol
+    if(tcp)
+      protocol = 'tcp'
+    else if(udp)
+      protocol = 'udp'
+    else
+      protocol = 'none'
+
     const test: Test = {
       ip,
       duration,
       packetSize,
       bandwidth,
       pingPackets: PingPackets,
-      tcp,
-      udp,
+      protocol,
       ping,
       default: deflt
     }
@@ -93,42 +99,6 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
             </>
           )}
 
-          {udp && !deflt && (
-            <>
-              <div className={style.inputWrapper}>
-                <input
-                  type="text"
-                  className={style.ipInput}
-                  value={duration}
-                  onChange={(e) => setDuration(e.target.value)}
-                  placeholder="Select test duration"
-                />
-              </div>
-              <div className={style.inputWrapper}>
-                <input
-                  type="text"
-                  className={style.ipInput}
-                  value={packetSize}
-                  onChange={(e) => setPacketSize(e.target.value)}
-                  placeholder="Select packet size"
-                />
-              </div>
-            </>
-          )}
-          {(tcp || udp) && !deflt && (
-            <>
-              <div className={style.inputWrapper}>
-                <input
-                  type="text"
-                  className={style.ipInput}
-                  value={bandwidth}
-                  onChange={(e) => setBandwidth(e.target.value)}
-                  placeholder="Enter bandwidth"
-                />
-              </div>
-            </>
-          )}
-
           <div className={style.inputWrapper}>
             <input
               type="text"
@@ -138,6 +108,30 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
               placeholder="Enter IP address"
             />
           </div>
+
+          {(tcp || udp) && !deflt && (
+            <>
+              <div className={style.inputWrapper}>
+                <input
+                  type="text"
+                  className={style.ipInput}
+                  value={packetSize}
+                  onChange={(e) => setPacketSize(e.target.value)}
+                  placeholder="Select packet size"
+                />
+              </div>
+              
+              <div className={style.inputWrapper}>
+                <input
+                  type="text"
+                  className={style.ipInput}
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                  placeholder="Select test duration"
+                />
+              </div>
+            </>
+          )}
 
           {ping && !deflt && (
               <div className={style.inputWrapper}>
