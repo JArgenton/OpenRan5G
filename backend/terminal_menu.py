@@ -1,6 +1,3 @@
-from tests.iperfr3_test import run_iperf3
-from tests.iperfr3_test import run_iperf3_server
-from tests.ping_test import run_ping
 from Executor import Executor
 import os
 
@@ -51,7 +48,7 @@ class Menu:
 
             if choice == '2':
                 print("\nIniciando servidor iperf3...\n")
-                run_iperf3_server()
+                self.executor.run_server()
             elif choice == '1':
                 self.clientMenu()
             else:
