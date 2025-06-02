@@ -8,7 +8,7 @@ export default function ResultsPage() {
   const tests = location.state?.tests;
 
   const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
   async function runTests() {

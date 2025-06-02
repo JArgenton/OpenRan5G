@@ -29,6 +29,8 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
   const [packetSize, setPacketSize] = useState<string>("")
   const [PingPackets, setPingPackets] = useState<string>("")
 
+  const [error, setError] = useState<string>("");
+
   const handleDefaultButton = (_: string, ativo: boolean) => {
     setDefault(ativo);  
   };
@@ -39,45 +41,73 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
         if (label === "TCP") setUdp(false);
         else setTcp(false);
       }
-    }
-    else{
-      if(ativo === false) setPingPackets("-1")
+    } else {
+      if (!ativo) setPingPackets("-1")
       setPing(ativo)
     }
   };
 
+  const validateFields = (): boolean => {
+    if (!ip.match(/^((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.|$)){4}$/)) {
+      setError("Invalid IP address");
+      return false;
+    }
+
+    if (!deflt && tcp === false && udp === false && ping === false) {
+      setError("Select at least 1 type of test");
+      return false;
+    }
+
+    if ((tcp || udp) && (!packetSize || isNaN(Number(packetSize)) || Number(packetSize) <= 0)) {
+      setError("Packet size must be a positive number");
+      return false;
+    }
+
+    if ((tcp || udp) && (!duration || isNaN(Number(duration)) || Number(duration) <= 0)) {
+      setError("Duration must be a positive number");
+      return false;
+    }
+
+    if (ping && (!PingPackets || isNaN(Number(PingPackets)) || Number(PingPackets) <= 0)) {
+      setError("Number of ping packets must be a positive number");
+      return false;
+    }
+
+    const n = Number(ntests);
+    if (!ntests || isNaN(n) || n < 1 || n > 10) {
+      setError("Number of tests must be between 1 and 10");
+      return false;
+    }
+
+    setError("");
+    return true;
+  };
+
   const handleRunButton = () => {
+    if (!validateFields()) return;
+
     let protocol
-    if(tcp)
-      protocol = 'tcp'
-    else if(udp)
-      protocol = 'udp'
-    else
-      protocol = 'none'
+    if (tcp) protocol = 'tcp'
+    else if (udp) protocol = 'udp'
+    else protocol = 'none'
 
     const test: Test = {
       ip,
-      duration,
-      packetSize,
-      pingPackets: PingPackets,
+      duration: duration === "" ? "0" : duration,
+      packetSize: packetSize === "" ? "0" : packetSize,
+      pingPackets: PingPackets === "" ? "0" : PingPackets,
       protocol,
       ping,
       default: deflt
     }
 
-    test.duration = test.duration === "" ? "0" : duration
-    test.packetSize = test.packetSize === "" ? "0" : packetSize
-    test.pingPackets = test.pingPackets === "" ? "0" : PingPackets
-
-
-    const tests: Test[]= []
-    const n = +ntests < 10 ? +ntests : 10
-    for(let i=0; i< +n; i++){
+    const tests: Test[] = []
+    const n = Math.min(Number(ntests), 10)
+    for (let i = 0; i < n; i++) {
       tests.push(test)
     }
 
     onSubmit(tests);
-    //setIp("");
     setDuration("")
     setNtests("")
     setPingPackets("")
@@ -88,11 +118,11 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
     <>
       <div className={style.wrapper}>
         <ToggleButton label="Default Test" onToggle={handleDefaultButton} />
+       
         <div>
           {!deflt && (
             <>
               <h2 className={style.sectionTitle}>Select test types</h2>
-              
               <div className={style.parameters}>
                 <ToggleButton label="Ping" onToggle={handleTypeSelector} />
                 <ToggleButton label="TCP" onToggle={handleTypeSelector} active={tcp} setActive={setTcp} />
@@ -122,7 +152,6 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
                   placeholder="Select packet size"
                 />
               </div>
-              
               <div className={style.inputWrapper}>
                 <input
                   type="text"
@@ -136,16 +165,17 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
           )}
 
           {ping && !deflt && (
-              <div className={style.inputWrapper}>
-                <input
-                  type="text"
-                  className={style.ipInput}
-                  value={PingPackets}
-                  onChange={(e) => setPingPackets(e.target.value)}
-                  placeholder="Number of ping packets"
-                />
-              </div>
+            <div className={style.inputWrapper}>
+              <input
+                type="text"
+                className={style.ipInput}
+                value={PingPackets}
+                onChange={(e) => setPingPackets(e.target.value)}
+                placeholder="Number of ping packets"
+              />
+            </div>
           )}
+
           <div className={style.inputWrapper}>
             <input
               type="text"
@@ -156,7 +186,12 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
             />
           </div>
         </div>
-        
+
+        {error && (
+          <div style={{ color: "red", marginBottom: "1rem" , textAlign: "center"}}>
+            {error}
+          </div>
+        )}
 
         <div className={style.actions}>
           <DefaultButton text={text} callback={handleRunButton} />
@@ -165,5 +200,3 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
     </>
   );
 }
-
-
