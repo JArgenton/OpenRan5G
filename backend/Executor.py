@@ -4,7 +4,6 @@ from tests.iperfr3_test import run_iperf3
 from tests.iperfr3_test import run_iperf3_server
 from tests.ping_test import run_ping
 from configuration.configuration import Configuration
-from plotting.plotGraphic import plot_packet_packetSize
 from database.teste_bd import Database
 
 #export interface Test {
@@ -29,7 +28,7 @@ class Executor:
     def execute_ping(self, server, test):
         return run_ping(server, test["package-count"])
     
-    def insert_tests(self, packet_size: int, duration: int, protocol: str = "", ntests: int = 1, package_count: int = -1):
+    def insert_tests(self, packet_size: int, duration: int, protocol: str = "none", ntests: int = 1, package_count: int = -1):
         if ntests < 0:
             print('Número inválido de testes')
         for i in range(0, ntests):

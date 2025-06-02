@@ -29,7 +29,7 @@ class Configuration:
         with open(target, 'w') as file:
             json.dump({"tests": []}, file, indent=4)  
     
-    def make_config(self, packet_size, duration, protocol = "", packet_count = -1):
+    def make_config(self, packet_size, duration, protocol = "none", packet_count = -1):
         if packet_count == -1 and protocol == "":
             print('Entrada de teste inválida')
             return
@@ -40,7 +40,7 @@ class Configuration:
                 "duration": duration,
                 "protocol": protocol     
             }
-        elif protocol == "":
+        elif protocol == "none":
             config = {
                 "package-count": packet_count    
             }

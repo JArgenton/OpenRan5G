@@ -12,7 +12,6 @@ export interface Test {
   ip: string,
   duration: string,
   packetSize: string,
-  bandwidth: string,
   pingPackets: string,
   protocol: string,
   ping: boolean,
@@ -29,7 +28,6 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
   const [deflt, setDefault] = useState<boolean>(false);
   const [packetSize, setPacketSize] = useState<string>("")
   const [PingPackets, setPingPackets] = useState<string>("")
-  const [bandwidth, setBandwidth] = useState<string>("")
 
   const handleDefaultButton = (_: string, ativo: boolean) => {
     setDefault(ativo);  
@@ -43,6 +41,7 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
       }
     }
     else{
+      if(ativo === false) setPingPackets("-1")
       setPing(ativo)
     }
   };
@@ -60,12 +59,16 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
       ip,
       duration,
       packetSize,
-      bandwidth,
       pingPackets: PingPackets,
       protocol,
       ping,
       default: deflt
     }
+
+    test.duration = test.duration === "" ? "0" : duration
+    test.packetSize = test.packetSize === "" ? "0" : packetSize
+    test.pingPackets = test.pingPackets === "" ? "0" : PingPackets
+
 
     const tests: Test[]= []
     const n = +ntests < 10 ? +ntests : 10
@@ -74,10 +77,9 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
     }
 
     onSubmit(tests);
-    setIp("");
+    //setIp("");
     setDuration("")
     setNtests("")
-    setBandwidth("")
     setPingPackets("")
     setPacketSize("")
   };
