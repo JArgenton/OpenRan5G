@@ -11,38 +11,38 @@ export default function ResultsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const runTests = async () => {
-      if (!tests) return;
+  async function runTests() {
+    if (!tests) return;
+    console.log("[RUN TESTS] iniciando fetch", new Date().toISOString());
 
-      try {
-        const response = await fetch("http://localhost:8000/api/tests", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(tests),
-        });
+    const res = await fetch("http://localhost:8000/api/tests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(tests),
+    });
 
-        if (!response.ok) throw new Error("Erro ao chamar a API");
+    console.log("[RUN TESTS] resposta recebida", res.status);
 
-        const data = await response.json();
-        setResult(data);
-      } catch (error) {
-        console.error("Erro ao rodar testes:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const data = await res.json();
+    console.log("[RUN TESTS] dados recebidos", data);
 
-    runTests();
-  }, [tests]);
+    setResult(data);
+    setLoading(false);
+  }
+
+  runTests();
+}, []);
 
   if (loading) {
-    return (
-      <div className={style.loaderContainer}>
+  return (
+    <div className={style.loaderWrapper}>
+      <div className={style.loaderBox}>
         <ClipLoader size={60} color="#00bfff" />
         <p>Executando testes, por favor aguarde...</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className={style.resultContainer}>

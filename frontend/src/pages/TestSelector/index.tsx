@@ -16,9 +16,17 @@ export default function TestSelector() {
 
   const navigate = useNavigate();
 
-    function handleRun() {
-        navigate("/results", { state: { tests } });
+  function handleRun() {
+    if (tests.length === 0) {
+        alert("Adicione ao menos um teste antes de continuar.");
+        return;
     }
+
+    console.log(tests)
+
+    navigate("/results", { state: { tests } });
+  }
+
 
   return (
     <>
