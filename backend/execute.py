@@ -4,7 +4,7 @@ from tests.iperfr3_test import run_iperf3
 from tests.ping_test import run_ping
 from configuration.configuration import Configuration
 from plotting.plotGraphic import plot_packet_packetSize
-from database.teste_bd import Database
+from database.data_manager import Database
 
 class Executor():
     def __init__(self):
@@ -46,33 +46,7 @@ class Executor():
         with open(file_path, "w") as file:
             json.dump({"tests": []}, file, indent=4)
             
-        return file_path
-
-    def insert_tests(self, aux):
-        inserir_novo_teste = aux
-        while inserir_novo_teste == 'S':
-
-            #CONFIGURAR TESTE
-            packet_size = int(input("packet size: "))
-            duration = int(input("duration: "))
-            protocol = str(input("protocol: ")).upper()
-            package_count = int(input("package count: "))
-
-            print("\n teste inserido")
-
-            self.configuration.make_config(packet_size, duration, protocol, package_count)
-            inserir_novo_teste = str(input("Deseja inserir um novo teste? \n S \n N \n")).upper()
-
-    def build_tests(self):
-        ip = str(input("Insira o ip: "))
-
-        inserir_novo_teste = str(input("Deseja inserir um novo teste? \n S \n N \n")).upper()
-        if inserir_novo_teste == 'S':
-            with open(self.configuration.parameters_path, 'w') as file:
-                json.dump(self.configuration.std_test_file, file, indent=4)
-
-            self.insert_tests(inserir_novo_teste) #essa é a primeira vez que eu senti q um do while ia ser util, nao sei se isso existe em python e o gepete morreu
-        return ip
+        return file_path    
     
     def exec(self):
         
