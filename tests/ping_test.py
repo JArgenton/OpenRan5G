@@ -16,7 +16,7 @@ class Ping(ABC):
         
         result = subprocess.run(command, capture_output=True, text=True) #executa o comando e captura o resultado
 
-        if result.returncode != 0:
+        if result.returncode != 0: 
             raise subprocess.CalledProcessError(result.returncode, command, result.stderr) #tratamento de erros (gpt tirou do bolso)
 
         return ping_output(result.stdout, target, count) #ping nao consegue retornar .json, tem que fazer desse jeito meio porco
