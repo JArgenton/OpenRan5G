@@ -11,7 +11,10 @@ export default function TestSelector() {
   const [tests, setTests] = useState<Test[]>([])
   
   function handleTestForm(test: Test[]) {
-      setTests([...tests, ...test])
+    if(tests[0])
+        test[0].ip === tests[0].ip ? setTests([...tests, ...test]) : console.log("Os endereços ips devem ser iguais")
+    else
+        setTests([...test])
   }
 
   const navigate = useNavigate();

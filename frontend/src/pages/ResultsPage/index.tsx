@@ -1,13 +1,16 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
-import style from "./style.module.css"; // <- CSS Module aqui
+import  ResultCard  from "../../Components/ResultCard";
+import style from "./style.module.css"; 
+import { ResultJson } from "../../Components/ResultCard";
+import DefaultHeader from "../../Components/DefaultHeader";
 
 export default function ResultsPage() {
   const location = useLocation();
   const tests = location.state?.tests;
 
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<{ results: ResultJson[] } | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -45,10 +48,19 @@ export default function ResultsPage() {
 }
 
   return (
-    <div className={style.resultContainer}>
-      <h2>Resultados:</h2>
-      <pre>{JSON.stringify(result, null, 2)}</pre>
-    </div>
+    <>
+      <DefaultHeader title="Results" />
+      <div className={style.resultContainer}>
+        {result?.results && (
+          <div className={style.cardList}>
+            {result.results.map((r: ResultJson, idx: number) => (
+              <ResultCard key={idx} test_result={r} />
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
+
 }
 
