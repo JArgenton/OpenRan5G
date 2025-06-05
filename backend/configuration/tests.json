@@ -1,3 +1,16 @@
 {
-    "tests": []
+    "tests": [
+        {
+            "packet-size": 128,
+            "duration": 10,
+            "protocol": "tcp",
+            "package-count": 0
+        },
+        {
+            "packet-size": 128,
+            "duration": 10,
+            "protocol": "tcp",
+            "package-count": 0
+        }
+    ]
 }

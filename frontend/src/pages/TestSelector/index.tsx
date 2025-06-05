@@ -3,6 +3,7 @@ import DefaultButton from "../../Components/DefaultButton"
 import DefaultHeader from "../../Components/DefaultHeader"
 import TestForm, { Test } from "../../Components/TestForm"
 import style from "./style.module.css"
+import { useNavigate } from "react-router-dom"
 
 
 export default function TestSelector() {
@@ -13,9 +14,19 @@ export default function TestSelector() {
       setTests([...tests, ...test])
   }
 
-  function handleRun(){
+  const navigate = useNavigate();
+
+  function handleRun() {
+    if (tests.length === 0) {
+        alert("Adicione ao menos um teste antes de continuar.");
+        return;
+    }
+
     console.log(tests)
+
+    navigate("/results", { state: { tests } });
   }
+
 
   return (
     <>
@@ -40,7 +51,7 @@ export default function TestSelector() {
                     <div key={i}>
                         <h2>{type}</h2>
                         <p>Ip: {test.ip}</p>
-                        {test.packetSize && <p>Packet size: {test.packetSize}</p>}
+                        {test.packetSize !== "0" && <p>Packet size: {test.packetSize}</p>}
                         <hr />
                     </div>
                 )

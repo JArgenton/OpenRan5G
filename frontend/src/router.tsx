@@ -7,6 +7,7 @@ import LogPage from "./pages/LogPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import RoutinePage from "./pages/RoutinePage";
 import AddRoutine from "./pages/AddRoutine";
+import ResultsPage from "./pages/ResultsPage";
 
 
 
@@ -37,6 +38,9 @@ const router = createBrowserRouter([
         element: <AddRoutine />
     },{
         path: "/saved"
+    },{
+        path: "/results",
+        element: <ResultsPage />
     }
 ])
 
