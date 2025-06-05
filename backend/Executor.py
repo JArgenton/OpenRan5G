@@ -10,7 +10,6 @@ from database.teste_bd import Database
   #ip: string,
   #duration: string,
   #packetSize: string,
-  #bandwidth: string,
   #pingPackets: string,
   #protocol: string
   #ping: boolean,

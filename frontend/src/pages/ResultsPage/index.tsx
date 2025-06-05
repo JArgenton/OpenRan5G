@@ -14,26 +14,26 @@ export default function ResultsPage() {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-  async function runTests() {
-    if (!tests) return;
-    console.log("[RUN TESTS] iniciando fetch", new Date().toISOString());
+    async function runTests() {
+      if (!tests) return;
+      console.log("[RUN TESTS] iniciando fetch", new Date().toISOString());
 
-    const res = await fetch("http://localhost:8000/api/tests", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(tests),
-    });
+      const res = await fetch("http://localhost:8000/api/tests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(tests),
+      });
 
-    console.log("[RUN TESTS] resposta recebida", res.status);
+      console.log("[RUN TESTS] resposta recebida", res.status);
 
-    const data = await res.json();
-    console.log("[RUN TESTS] dados recebidos", data);
+      const data = await res.json();
+      console.log("[RUN TESTS] dados recebidos", data);
 
-    setResult(data);
-    setLoading(false);
-  }
+      setResult(data);
+      setLoading(false);
+    }
 
-  runTests();
+    runTests();
 }, []);
 
   if (loading) {
