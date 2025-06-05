@@ -11,9 +11,8 @@ class TestesDeRedeDAO(DAO):
         """
         self._cur.execute(f"""
             CREATE TABLE IF NOT EXISTS {self.table_name} (
-                TEST_ID TEXT PRIMARY KEY,          
-                TIMESTAMP TEXT NOT NULL,         
-
+                TEST_ID TEXT PRIMARY KEY,      
+                TEST_NAME     
                 -- Parâmetros Comuns 
                 SERVER TEXT NOT NULL,            
                 PROTOCOL TEXT NOT NULL,           
