@@ -1,7 +1,7 @@
 import subprocess
 import json
 import os
-from configuration.configuration import Configuration
+from configuration.configuration import Configuration_
 from abc import ABC, abstractmethod
 
 class Ping(ABC):
@@ -19,11 +19,11 @@ class Ping(ABC):
         if result.returncode != 0: 
             raise subprocess.CalledProcessError(result.returncode, command, result.stderr) #tratamento de erros (gpt tirou do bolso)
 
-        return ping_output(result.stdout, target, count) #ping nao consegue retornar .json, tem que fazer desse jeito meio porco
+        return Ping.ping_output(result.stdout, target, count) #ping nao consegue retornar .json, tem que fazer desse jeito meio porco
 
     @abstractmethod
     def ping_output(output, target, count):
-        configuration = Configuration.getObject()
+        configuration = Configuration_.getObject()
         lines = output.split("\n")
         stats_line = [line for line in lines if "rtt" in line or "min/avg/max" in line]
 

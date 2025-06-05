@@ -27,7 +27,6 @@ class Configuration_:
     def clean_tests(self):
         target = self.parameters_path
         with open(target, 'w') as file:
-<<<<<<< HEAD:backend/configuration/configuration.py
             json.dump({"tests": []}, file, indent=4)  
     
     def make_config(self, packet_size, duration, protocol = "none", packet_count = -1):
@@ -47,25 +46,13 @@ class Configuration_:
             }
         else:
             config = {
-=======
-            #acabar tlg
-            pass    
-    def make_config(self,target,  packet_size, duration, protocol, packet_count):
-        config = {
-            
->>>>>>> programer:backend/configuration/config.py
                 "packet-size":packet_size ,
                 "duration": duration,
                 "protocol": protocol,
                 "package-count": packet_count       
-<<<<<<< HEAD:backend/configuration/configuration.py
             }
 
         output_file = self.parameters_path
-=======
-        }
-        output_file = target
->>>>>>> programer:backend/configuration/config.py
         
         with open(output_file, "r+") as file:
             tests = json.load(file)
@@ -80,17 +67,18 @@ class Configuration_:
           data =  json.load(file)
         return data 
 
+    @staticmethod
     def getObject():
-        if Configuration._instance is None:
-            Configuration._instance = Configuration()
-            data = Configuration.loadFromJson()
+        if Configuration_._instance is None:
+            Configuration_._instance = Configuration_()
+            data = Configuration_.loadFromJson()
 
-            instance = Configuration._instance
+            instance = Configuration_._instance
             instance.parameters_path = data["configuration"]["tests"]["parameters-path"]
             instance.output_file= data["configuration"]["tests"]["output-file"]
             instance.ping_index = data["configuration"]["tests"]["ping-index"]
             instance.iperf_index = data["configuration"]["tests"]["iperf-index"]
             instance.std_test_file = data["configuration"]["std-test-file"]
            
-        return Configuration._instance  
+        return Configuration_._instance  
     
