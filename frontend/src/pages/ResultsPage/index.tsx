@@ -1,36 +1,39 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
-import style from "./style.module.css"; // <- CSS Module aqui
+import  ResultCard  from "../../Components/ResultCard";
+import style from "./style.module.css"; 
+import { ResultJson } from "../../Components/ResultCard";
+import DefaultHeader from "../../Components/DefaultHeader";
 
 export default function ResultsPage() {
   const location = useLocation();
   const tests = location.state?.tests;
 
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<{ results: ResultJson[] } | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-  async function runTests() {
-    if (!tests) return;
-    console.log("[RUN TESTS] iniciando fetch", new Date().toISOString());
+    async function runTests() {
+      if (!tests) return;
+      console.log("[RUN TESTS] iniciando fetch", new Date().toISOString());
 
-    const res = await fetch("http://localhost:8000/api/tests", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(tests),
-    });
+      const res = await fetch("http://localhost:8000/api/tests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(tests),
+      });
 
-    console.log("[RUN TESTS] resposta recebida", res.status);
+      console.log("[RUN TESTS] resposta recebida", res.status);
 
-    const data = await res.json();
-    console.log("[RUN TESTS] dados recebidos", data);
+      const data = await res.json();
+      console.log("[RUN TESTS] dados recebidos", data);
 
-    setResult(data);
-    setLoading(false);
-  }
+      setResult(data);
+      setLoading(false);
+    }
 
-  runTests();
+    runTests();
 }, []);
 
   if (loading) {
@@ -45,10 +48,19 @@ export default function ResultsPage() {
 }
 
   return (
-    <div className={style.resultContainer}>
-      <h2>Resultados:</h2>
-      <pre>{JSON.stringify(result, null, 2)}</pre>
-    </div>
+    <>
+      <DefaultHeader title="Results" />
+      <div className={style.resultContainer}>
+        {result?.results && (
+          <div className={style.cardList}>
+            {result.results.map((r: ResultJson, idx: number) => (
+              <ResultCard key={idx} test_result={r} />
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
+
 }
 

@@ -1,0 +1,46 @@
+.card {
+  background-color: #1a1a1a;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid #2ecc71;
+  box-shadow: 0 0 12px rgba(46, 204, 113, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 20px rgba(46, 204, 113, 0.35);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00ff88; /* mais claro e neon real */
+  margin-bottom: 1rem;
+}
+
+.section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2c2c2c;
+}
+
+.label {
+  font-weight: 500;
+  color: #9ca3af;
+}
+
+.value {
+  color: #f3f4f6;
+}
+
+.pair {
+  margin-bottom: 0.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #00ff88; /* mesma cor neon */
+  margin-bottom: 0.5rem;
+}
