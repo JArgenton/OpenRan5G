@@ -37,7 +37,7 @@ class Executor:
         self.configuration.clean_tests()
        
     def run_server(self):
-        run_iperf3_server()
+        Iperf.run_iperf3_server()
 
     def run_tests(self, server):    
         with open('backend/configuration/tests.json', 'r') as file:
