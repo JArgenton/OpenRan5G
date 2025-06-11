@@ -15,6 +15,7 @@ class Database:
     def __build_table__(self):
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS testes (
+            id PRIMARY KEY AUTOINCREMENT,
             date TEXT NOT NULL,
             server TEXT NOT NULL,
             protocol TEXT NOT NULL,

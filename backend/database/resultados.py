@@ -10,10 +10,11 @@ class ResultadosDAO(DAO):
         Cria 'resultados' com medições e resultados do teste.
         chave para testes de rede
         """
+        #test_id tem q ser routine ID
         self._cur.execute(f"""
             CREATE TABLE IF NOT EXISTS {self.table_name} (
-                RESULT_ID TEXT PRIMARY KEY,   
-                TEST_ID TEXT NOT NULL,             
+                RESULT_ID INTEGER PRIMARY KEY AUTOINCREMENT,    
+                TEST_ID TEXT NOT NULL,              
                 TIMESTAMP_RESULT TEXT NOT NULL,    
 
                 -- Resultados de Ping
