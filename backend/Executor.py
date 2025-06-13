@@ -38,7 +38,7 @@ class Executor:
     def format_save_json(self, result, protocol, ping):
         
         obj = {}
-        obj["TIMESTAMP_RESULT"] = result["bandwidith"]["timestamp"]
+        obj["TIMESTAMP_RESULT"] = result["bandwidth"]["timestamp"]
         obj["ROUTINE_ID"] = "0"
 
         if ping:
@@ -94,7 +94,7 @@ class Executor:
 
         
         
-        #print({"results": results})
+        print({"results": results})
         
         return {"results": results}
 #MIN_LATENCY REAL,                  

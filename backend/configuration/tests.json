@@ -3,14 +3,8 @@
         {
             "packet-size": 256,
             "duration": 10,
-            "protocol": "UDP",
-            "package-count": 10
-        },
-        {
-            "packet-size": 256,
-            "duration": 10,
-            "protocol": "TCP",
-            "package-count": 10
+            "protocol": "udp",
+            "package-count": 0
         }
     ]
 }
