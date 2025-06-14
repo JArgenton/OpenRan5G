@@ -1,8 +1,8 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from backend.Executor import Executor
+from fastapi import FastAPI # type: ignore
+from fastapi.middleware.cors import CORSMiddleware # type: ignore
+from .Executor import Executor
 from typing import List
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse # type: ignore
 
 app = FastAPI()
 

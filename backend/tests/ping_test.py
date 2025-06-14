@@ -1,7 +1,7 @@
 import subprocess
 import json
 import os
-from backend.configuration.configuration import Configuration_
+from ..configuration.configuration import Configuration_
 from abc import ABC, abstractmethod
 
 class Ping(ABC):

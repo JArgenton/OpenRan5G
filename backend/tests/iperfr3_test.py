@@ -1,7 +1,7 @@
 import subprocess
 import json
 from abc import ABC, abstractmethod
-from backend.configuration.configuration import Configuration_
+from ..configuration.configuration import Configuration_
 import os
 
 class Iperf(ABC):
