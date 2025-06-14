@@ -1,9 +1,9 @@
 import json
 import os
-from tests.iperfr3_test import Iperf
-from tests.ping_test import Ping
-from configuration.configuration import Configuration_
-from database.teste_bd import Database
+from backend.tests.ping_test import Ping
+from backend.tests.iperfr3_test import Iperf
+from backend.configuration.configuration import Configuration_
+from backend.database.teste_bd import Database
 #from database.resultados import ResultadosDAO
 
 #export interface Test {

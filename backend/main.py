@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from Executor import Executor
+from backend.Executor import Executor
 from typing import List
 from fastapi.responses import JSONResponse
 
