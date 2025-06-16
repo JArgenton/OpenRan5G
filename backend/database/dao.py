@@ -1,24 +1,25 @@
 import sqlite3
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Tuple
-from singleton import MetaSingleton
+import data_manager
 
-class DAO(ABC, metaclass=MetaSingleton):
+class DAO(ABC):
+    database_manager = data_manager.Database_Manager.get_object()
+
     """data acess object"""
-    def __init__(self, db_path: str = "app.db"):
-        self._conn = sqlite3.connect(db_path)
-        self._cur = self._conn.cursor()
+    def __init__(self):
+        self._conn = self.database_manager.connection
+        self._cur = self.database_manager.cursor
+
 
     @property
-    @abstractmethod
     def table_name(self) -> str:
         """
         Deve retornar o nome da tabela.
         Subclasses **precisam** sobrescrever este método.
         """
         raise NotImplementedError("Subclasse deve implementar table_name()")
-
-    @abstractmethod
+    
     def create_table(self) -> None:
         """
         Deve criar a tabela no banco caso não exista.
@@ -26,7 +27,6 @@ class DAO(ABC, metaclass=MetaSingleton):
         """
         raise NotImplementedError("Subclasse deve implementar create_table()") 
     
-
     """cara, isso gera uma fodendo Querry. 
     o **kwargs é um mapa que associa nomes a valores, exatamente como o insert de um banco
     oque acontece aqui é o seguinte, a classe que chamar o DAO precisa passar um dicionario para ela
@@ -72,7 +72,7 @@ class DAO(ABC, metaclass=MetaSingleton):
     gepete ajudou legal nessa, mas ficou do crl
     MAGIA PURA OSS!
     """
-    def fetch_where_nao_recomendado(self, where: str) -> List[Tuple]:
+    def fetch_where(self, where: str) -> List[Tuple]:
 
         sql = f"SELECT * FROM {self.table_name} {where}"
         self._cur.execute(sql) 
@@ -82,3 +82,7 @@ class DAO(ABC, metaclass=MetaSingleton):
         """Fecha cursor e conexão."""
         self._cur.close()
         self._conn.close()
+
+
+
+

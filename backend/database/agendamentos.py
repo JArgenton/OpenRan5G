@@ -1,6 +1,9 @@
 from dao import DAO
 
 class AgendamentosDAO(DAO):
+    def __init__(self):
+        super().__init__()
+        self.create_table()
     @property
     def table_name(self) -> str:
         return "agendamentos"

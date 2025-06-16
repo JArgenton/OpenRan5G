@@ -1,5 +1,6 @@
 import sqlite3
 import json
+
 class Database:
     _instance = None
     def __init__(self):
@@ -97,3 +98,5 @@ class Database:
 
         for row in rows:
             print(row)
+
+

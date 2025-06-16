@@ -1,23 +1,20 @@
 import sqlite3
-from singleton import MetaSingleton
 import json
-class Database_Manager(metaclass=MetaSingleton): #metaclasses. EHHHHHHHHHHHH
-    def __init__(self, db_path):
+class Database_Manager():
+    _instance = None 
+    def __init__(self):
         self.connection = None
         self.cursor = None
-        self.db_path = db_path
 
     def get_object():
-        if Database_Manager._instance == None:
-            Database_Manager._instance = Database_Manager()
-        return Database_Manager._instance
 
-    def connect(self):
+        if Database_Manager._instance is None:
+            Database_Manager._instance = Database_Manager()
         """define o cursor e abre connexao"""
-        if(self.connection is None):
-            self.connection = sqlite3.connect(self.db_path)
-            self.cursor = self.connection.cursor()
-            return self.connection, self.cursor
+        if(Database_Manager._instance.connection is None):
+            Database_Manager._instance.connection = sqlite3.connect("backend/database/results.db")
+            Database_Manager._instance.cursor = Database_Manager._instance.connection.cursor()
+        return Database_Manager._instance
         
     def commit(self):
         """Confirma transações pendentes."""
