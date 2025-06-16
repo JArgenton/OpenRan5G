@@ -12,7 +12,7 @@ class Database_Manager():
             Database_Manager._instance = Database_Manager()
         """define o cursor e abre connexao"""
         if(Database_Manager._instance.connection is None):
-            Database_Manager._instance.connection = sqlite3.connect("backend/database/results.db")
+            Database_Manager._instance.connection = sqlite3.connect("backend/database/results.db", check_same_thread=False)
             Database_Manager._instance.cursor = Database_Manager._instance.connection.cursor()
         return Database_Manager._instance
         

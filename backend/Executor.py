@@ -68,14 +68,14 @@ class Executor:
     Retorno resultados
         (RESULT_ID, ROUTINE_ID, TIMESTAMP_RESULT, MIN_LATENCY, AVG_LATENCY, MAX_LATENCY, LOST_PACKETS, LOST_PERCENT, BITS_PER_SECOND, BYTES_TRANSFERRED, JITTER, RETRANSMITS)
     """
-    def load_data(self, timestamp="", routine_id=-1):
+    def load_data(self):
         results = self.database.fetch_all()
         formated_results = []
         for result in results:
-            print(result)
-            self.format_result_json(result)
-            formated_results.append(result)
-        return {"results" : formated_results}
+            formatted = self.format_result_json(result)
+            if formatted:  
+                formated_results.append(formatted)
+        return {"results": formated_results}
         
     def format_result_json(self, row: tuple) -> dict:
         (
@@ -153,7 +153,6 @@ class Executor:
             data = json.load(file)
 
         results = []
-
         for index, test in enumerate(data['tests'], start=0):
             test_result = {}
 
@@ -162,6 +161,7 @@ class Executor:
 
             if test.get("protocol", 0):
                 protocol = test["protocol"]
+                print(protocol)
                 test_result["bandwidth"] = self.execute_iperf3(server, test)
                 
 
@@ -171,11 +171,9 @@ class Executor:
 
             formated_results = self.format_save_json(test_result, protocol, ping)
             self.database.insert(formated_results)
-
             results.append(test_result)
-
-        #print({"results": results})
-        
+            #print(test_result)
+        #print(results)
         return {"results": results}
    
 

@@ -37,7 +37,9 @@ def run_tests(tests: List[dict]):
     
 @app.get("/api/log")
 def get_data_log():
-    return executor.load_data()
+    data = executor.load_data()
+    #print(data)
+    return data
 
     
             

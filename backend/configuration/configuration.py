@@ -38,7 +38,7 @@ class Configuration_:
             config = {
                 "packet-size":packet_size ,
                 "duration": duration,
-                "protocol": protocol     
+                "protocol": protocol.upper()      
             }
         elif protocol == "none":
             config = {
@@ -46,9 +46,9 @@ class Configuration_:
             }
         else:
             config = {
-                "packet-size":packet_size ,
+                "packet-size":packet_size,
                 "duration": duration,
-                "protocol": protocol,
+                "protocol": protocol.upper(),
                 "package-count": packet_count       
             }
 
