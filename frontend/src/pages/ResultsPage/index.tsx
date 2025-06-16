@@ -27,6 +27,12 @@ export default function ResultsPage() {
       console.log("[RUN TESTS] resposta recebida", res.status);
 
       const data = await res.json();
+      if (!res.ok) {
+        console.error("Erro ao buscar dados");
+        setLoading(false);
+        return;
+      }
+      
       console.log("[RUN TESTS] dados recebidos", data);
 
       setResult(data);

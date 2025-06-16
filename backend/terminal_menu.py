@@ -29,6 +29,9 @@ class Menu:
                 print("Executando testes...\n")
                 self.executor.run_tests(ip)
                 input('\nPressione Enter para continuar...')
+            elif choice == 3:
+                print(self.data_log())
+                input('\nPressione Enter para continuar...')
             elif choice == 4:
                 return
             else:
@@ -53,6 +56,10 @@ class Menu:
                 self.clientMenu()
             else:
                 input("Comando inválido. Pressione Enter para continuar.")
+
+    def data_log(self):
+        data = self.executor.load_data()
+        return data
 
     def build_tests(self):
         os.system('clear')

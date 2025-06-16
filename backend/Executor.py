@@ -3,8 +3,7 @@ import os
 from .tests.ping_test import Ping
 from .tests.iperfr3_test import Iperf
 from .configuration.configuration import Configuration_
-from .database.teste_bd import Database
-from database.resultados import ResultadosDAO
+from .database.resultados import ResultadosDAO
 
 #export interface Test {
   #ip: string,
@@ -19,7 +18,7 @@ from database.resultados import ResultadosDAO
 class Executor:
     def __init__(self):
         self.configuration = Configuration_.getObject()
-        self.database = Database.get_object()
+        self.database = ResultadosDAO()
         #ResultadosDAO.create_table()
     
     def execute_iperf3(self, server, test):
@@ -39,7 +38,6 @@ class Executor:
         
         obj = {}
         obj["TIMESTAMP_RESULT"] = result["bandwidth"]["timestamp"]
-        obj["ROUTINE_ID"] = "0"
 
         if ping:
             obj["MIN_LATENCY"] = result["latency"]["results"]["min_latency_ms"]
@@ -50,12 +48,12 @@ class Executor:
             obj["LOST_PACKETS"] = result["bandwidth"]["results"]["lost_packets"]
             obj["LOST_PERCENT"] = result["bandwidth"]["results"]["lost_percent"]
             obj["BITS_PER_SECOND"] = result["bandwidth"]["results"]["bits_per_second"]
-            obj["BITS_TRANSFERED"] = result["bandwidth"]["results"]["bytes_transferred"]
+            obj["BYTES_TRANSFERED"] = result["bandwidth"]["results"]["bytes_transferred"]
             obj["JITTER"] = result["bandwidth"]["results"]["Jitter"]
 
         if protocol == "TCP":
             obj["BITS_PER_SECOND"] = result["bandwidth"]["results"]["bits_per_second"]
-            obj["BITS_TRANSFERED"] = result["bandwidth"]["results"]["bytes_transferred"]
+            obj["BYTES_TRANSFERED"] = result["bandwidth"]["results"]["bytes_transferred"]
             obj["RETRANSMITS"] = result["bandwidth"]["results"]["retransmits"]
         
         return obj
@@ -71,17 +69,18 @@ class Executor:
         (RESULT_ID, ROUTINE_ID, TIMESTAMP_RESULT, MIN_LATENCY, AVG_LATENCY, MAX_LATENCY, LOST_PACKETS, LOST_PERCENT, BITS_PER_SECOND, BYTES_TRANSFERRED, JITTER, RETRANSMITS)
     """
     def load_data(self, timestamp="", routine_id=-1):
-        results = ResultadosDAO.fetch_all()
+        results = self.database.fetch_all()
         formated_results = []
         for result in results:
+            print(result)
             self.format_result_json(result)
             formated_results.append(result)
         return {"results" : formated_results}
         
-    def format_result_json(row: tuple) -> dict:
+    def format_result_json(self, row: tuple) -> dict:
         (
             _,              # RESULT_ID (ignorado)
-            _,              # ROUTINE_ID (ignorado)
+            _,              # TEST_ID (ignorado)
             timestamp,      # TIMESTAMP_RESULT
             min_latency,    # MIN_LATENCY
             avg_latency,    # AVG_LATENCY
@@ -171,27 +170,14 @@ class Executor:
                 test_result["latency"] = self.execute_ping(server, test)
 
             formated_results = self.format_save_json(test_result, protocol, ping)
-            #ResultadosDAO.insert(formated_results)
-            print(formated_results)
+            self.database.insert(formated_results)
 
             results.append(test_result)
 
-        
-        
         #print({"results": results})
         
         return {"results": results}
-#MIN_LATENCY REAL,                  
- #               AVG_LATENCY REAL,                  
-  #              MAX_LATENCY REAL,                  
-   #             LOST_PACKETS REAL,                 
-    #            LOST_PERCENT REAL,                 
-#
- #               -- Resultados de Iperf3
-  #              BITS_PER_SECOND REAL,              
-   #             BYTES_TRANSFERRED REAL,            
-    #            JITTER REAL,                       
-     #           RETRANSMITS REAL,        
+   
 
 if __name__ == "__main__":
     executor = Executor()

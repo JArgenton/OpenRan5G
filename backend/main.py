@@ -34,6 +34,10 @@ def run_tests(tests: List[dict]):
         return resultado
     except Exception as e:
         return JSONResponse(status_code=200, content={"error": str(e)})
+    
+@app.get("/api/log")
+def get_data_log():
+    return executor.load_data()
 
     
             

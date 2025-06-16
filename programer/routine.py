@@ -33,3 +33,5 @@ class Routine:
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(ids, f, indent=4)
                 
+
+            subprocess.run(command, capture_output=True, text=True)
