@@ -1,4 +1,4 @@
-from dao import DAO
+from database.dao import DAO
 
 class ResultadosDAO(DAO):
     @property
@@ -13,8 +13,13 @@ class ResultadosDAO(DAO):
         #test_id tem q ser routine ID
         self._cur.execute(f"""
             CREATE TABLE IF NOT EXISTS {self.table_name} (
+<<<<<<< HEAD
                 RESULT_ID INTEGER PRIMARY KEY AUTOINCREMENT,    
                 TEST_ID TEXT NOT NULL,              
+=======
+                RESULT_ID INTEGER PRIMARY KEY AUTOINCREMENT,   
+                ROUTINE_ID TEXT NOT NULL,             
+>>>>>>> 154405f0fc369751da8dff810ddc71be4d4be523
                 TIMESTAMP_RESULT TEXT NOT NULL,    
 
                 -- Resultados de Ping

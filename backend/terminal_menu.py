@@ -1,4 +1,4 @@
-from Executor import Executor
+from .Executor import Executor
 import os
 
 class Menu:
