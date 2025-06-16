@@ -13,7 +13,7 @@ class ResultadosDAO(DAO):
         self._cur.execute(f"""
             CREATE TABLE IF NOT EXISTS {self.table_name} (
                 RESULT_ID INTEGER PRIMARY KEY AUTOINCREMENT,   
-                ROUTINE_ID TEXT NOT NULL,             
+                ROUTINE_ID TEXT,             
                 TIMESTAMP_RESULT TEXT NOT NULL,    
 
                 -- Resultados de Ping
@@ -33,3 +33,8 @@ class ResultadosDAO(DAO):
             )
         """)
         self._conn.commit()
+
+        """
+        Retorno resultados
+            (RESULT_ID, ROUTINE_ID, TIMESTAMP_RESULT, MIN_LATENCY, AVG_LATENCY, MAX_LATENCY, LOST_PACKETS, LOST_PERCENT, BITS_PER_SECOND, BYTES_TRANSFERRED, JITTER, RETRANSMITS)
+        """

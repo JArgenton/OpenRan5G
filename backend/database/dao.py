@@ -75,6 +75,7 @@ class DAO(ABC, metaclass=MetaSingleton):
         sql = f"SELECT * FROM {self.table_name} {where}"
         self._cur.execute(sql, params)
         return self._cur.fetchall()
+        
 
     def close(self) -> None:
         """Fecha cursor e conexão."""

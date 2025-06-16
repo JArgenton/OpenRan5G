@@ -1,10 +1,10 @@
 {
     "tests": [
         {
-            "packet-size": 256,
+            "packet-size": 128,
             "duration": 10,
-            "protocol": "udp",
-            "package-count": 0
+            "protocol": "TCP",
+            "package-count": 10
         }
     ]
 }
