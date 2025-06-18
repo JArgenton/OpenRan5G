@@ -51,12 +51,16 @@ export default function LogPage(){
 
     return(
         <>
-            <DefaultHeader title="Tests Log" />
+        <DefaultHeader title="Test Log" />
+        <div className={style.resultContainer}>
+            {result?.results && (
             <div className={style.cardList}>
-                {result?.results && result?.results.map((r: ResultJson, idx:number) => {
-                    return <ResultCard test_result={r} key={idx}/>
-                })}
+                {result.results.map((r: ResultJson, idx: number) => (
+                <ResultCard key={idx} test_result={r} />
+                ))}
             </div>
-        </>
+            )}
+        </div>
+    </>
     )
 }

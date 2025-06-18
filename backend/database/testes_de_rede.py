@@ -16,18 +16,22 @@ class TestesDeRedeDAO(DAO):
         self._cur.execute(f"""
     CREATE TABLE IF NOT EXISTS {self.table_name} (
         TEST_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        TEST_NAME TEXT NOT NULL,
+        ROUTINE_ID INTEGER,
         SERVER TEXT NOT NULL,
-        PROTOCOL TEXT NOT NULL,
+        PROTOCOL TEXT,
         DURATION_SECONDS REAL,
         PACKET_SIZE INTEGER,
-        PACKET_COUNT INTEGER,
-        IS_PING BOOLEAN NOT NULL,
-        IS_IPERF BOOLEAN NOT NULL
+        PACKET_COUNT INTEGER
     )
         """)
 
         self._conn.commit()
+
+    def get_latest_id(self):
+        sql = f"SELECT MAX(TEST_ID) FROM {self.table_name}"
+        self._cur.execute(sql)
+        result = self._cur.fetchone()
+        return result[0] if result else None  
 
 
 if __name__ == '__main__':
@@ -47,3 +51,5 @@ if __name__ == '__main__':
     all = testes_de_rede.fetch_all()
     for a in all:
         print(a)
+
+    #(ip, duration, packet_size, packet_count)

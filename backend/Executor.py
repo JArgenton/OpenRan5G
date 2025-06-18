@@ -4,6 +4,7 @@ from .tests.ping_test import Ping
 from .tests.iperfr3_test import Iperf
 from .configuration.configuration import Configuration_
 from .database.resultados import ResultadosDAO
+from .database.testes_de_rede import TestesDeRedeDAO
 
 #export interface Test {
   #ip: string,
@@ -15,10 +16,13 @@ from .database.resultados import ResultadosDAO
  # default: boolean
 #}
 
+#OS PROBLEMAS FALTANTES SAO: timestamp apenas em bandwidth e a routine nao foi configurada direito ainda
+
 class Executor:
     def __init__(self):
         self.configuration = Configuration_.getObject()
-        self.database = ResultadosDAO()
+        self.databaser = ResultadosDAO()
+        self.databaset = TestesDeRedeDAO()
         #ResultadosDAO.create_table()
     
     def execute_iperf3(self, server, test):
@@ -38,6 +42,7 @@ class Executor:
         
         obj = {}
         obj["TIMESTAMP_RESULT"] = result["bandwidth"]["timestamp"]
+        obj["TEST_ID"] = self.databaset.get_latest_id()
 
         if ping:
             obj["MIN_LATENCY"] = result["latency"]["results"]["min_latency_ms"]
@@ -69,9 +74,10 @@ class Executor:
         (RESULT_ID, ROUTINE_ID, TIMESTAMP_RESULT, MIN_LATENCY, AVG_LATENCY, MAX_LATENCY, LOST_PACKETS, LOST_PERCENT, BITS_PER_SECOND, BYTES_TRANSFERRED, JITTER, RETRANSMITS)
     """
     def load_data(self):
-        results = self.database.fetch_all()
+        results_params = self.databaser.get_results_params()
         formated_results = []
-        for result in results:
+        #print(results_params)
+        for result in results_params:
             formatted = self.format_result_json(result)
             if formatted:  
                 formated_results.append(formatted)
@@ -79,8 +85,8 @@ class Executor:
         
     def format_result_json(self, row: tuple) -> dict:
         (
-            _,              # RESULT_ID (ignorado)
-            _,              # TEST_ID (ignorado)
+            _,              # RESULT_ID
+            _,              # TEST_ID
             timestamp,      # TIMESTAMP_RESULT
             min_latency,    # MIN_LATENCY
             avg_latency,    # AVG_LATENCY
@@ -88,22 +94,28 @@ class Executor:
             lost_packets,   # LOST_PACKETS
             lost_percent,   # LOST_PERCENT
             bits_per_second,# BITS_PER_SECOND
-            bytes_transferred, # BYTES_TRANSFERRED
+            bytes_transferred, # BYTES_TRANSFERED
             jitter,         # JITTER
-            retransmits     # RETRANSMITS
+            retransmits,    # RETRANSMITS
+            _,              # ROUTER_ID
+            server,         # SERVER (from testes_de_rede)
+            protocol,       # PROTOCOL
+            duration,       # DURATION_SECONDS
+            packet_size,    # PACKET_SIZE
+            packet_count    # PACKET_COUNT
         ) = row
 
         result: dict = {}
 
-        # Monta latency (ping_data)
+        # Latency (ping)
         if min_latency is not None and avg_latency is not None and max_latency is not None:
             result["latency"] = {
                 "timestamp": timestamp,
                 "test_type": "latency",
                 "tool": "ping",
                 "parameters": {
-                    "target": "",  # preencha se tiver essa info
-                    "packet_count": 0  # preencha se tiver essa info
+                    "target": server or "",
+                    "packet_count": packet_count or 0
                 },
                 "results": {
                     "min_latency_ms": min_latency,
@@ -112,40 +124,75 @@ class Executor:
                 }
             }
 
-        # Monta bandwidth (iperf_data)
+        # Bandwidth (iperf3)
         if bits_per_second is not None and bytes_transferred is not None:
             bandwidth = {
                 "timestamp": timestamp,
                 "test_type": "bandwidth",
                 "parameters": {
-                    "server": "",  # preencha se tiver essa info
-                    "duration_seconds": 0,  # preencha se tiver essa info
-                    "packet_size": 0  # preencha se tiver essa info
+                    "server": server or "",
+                    "duration_seconds": duration or 0,
+                    "packet_size": packet_size or 0
                 },
                 "results": {}
             }
 
-            if lost_packets is not None and lost_percent is not None and jitter is not None:
+            if protocol and protocol.upper() == "UDP":
                 bandwidth["protocol"] = "udp"
                 bandwidth["results"] = {
                     "bits_per_second": bits_per_second,
-                    "lost_packets": lost_packets,
-                    "lost_percent": lost_percent,
+                    "lost_packets": lost_packets or 0,
+                    "lost_percent": lost_percent or 0,
                     "bytes_transferred": bytes_transferred,
-                    "Jitter": jitter,
-                    "packets": 0  # preencha se tiver essa info
+                    "Jitter": jitter or 0,
+                    "packets": packet_count or 0
                 }
-            elif retransmits is not None:
+
+            elif protocol and protocol.upper() == "TCP":
                 bandwidth["protocol"] = "tcp"
                 bandwidth["results"] = {
                     "bits_per_second": bits_per_second,
-                    "retransmits": retransmits,
+                    "retransmits": retransmits or 0,
                     "bytes_transferred": bytes_transferred
                 }
 
             result["bandwidth"] = bandwidth
 
+        print(result)
+
         return result
+
+    
+    def format_save_test(self, test: dict, server: str) -> dict:
+        obj = {}
+
+        # Campo obrigatório
+        obj["SERVER"] = server
+
+        # Campos diretos (protocolo pode não estar presente)
+        obj["PROTOCOL"] = test.get("protocol", None)
+
+        # duration
+        try:
+            obj["DURATION_SECONDS"] = float(test.get("duration", None))
+        except (TypeError, ValueError):
+            obj["DURATION_SECONDS"] = None
+
+        # packet-size
+        try:
+            obj["PACKET_SIZE"] = int(test.get("packet-size", None))
+        except (TypeError, ValueError):
+            obj["PACKET_SIZE"] = None
+
+        # package-count (ping)
+        try:
+            obj["PACKET_COUNT"] = int(test.get("package-count", None))
+        except (TypeError, ValueError):
+            obj["PACKET_COUNT"] = None
+
+        return obj
+
+
 
 
     def run_tests(self, server):    
@@ -169,10 +216,15 @@ class Executor:
                 ping = True
                 test_result["latency"] = self.execute_ping(server, test)
 
-            formated_results = self.format_save_json(test_result, protocol, ping)
-            self.database.insert(formated_results)
+            formated_result = self.format_save_json(test_result, protocol, ping)
+            formated_test = self.format_save_test(test, server)
+
+            self.databaset.insert(formated_test)
+            self.databaser.insert(formated_result)
+
             results.append(test_result)
-            #print(test_result)
+            #print(self.databaser.fetch_all())
+            #print(self.databaset.fetch_all())
         #print(results)
         return {"results": results}
    
@@ -180,4 +232,6 @@ class Executor:
 if __name__ == "__main__":
     executor = Executor()
     executor.mainMenu()
-    
+
+
+#(ip, duration, packet_size, packet_count)

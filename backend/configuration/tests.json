@@ -1,22 +1,10 @@
 {
     "tests": [
         {
-            "packet-size": 256,
-            "duration": 10,
-            "protocol": "UDP",
-            "package-count": 0
-        },
-        {
-            "packet-size": 256,
-            "duration": 10,
-            "protocol": "UDP",
-            "package-count": 0
-        },
-        {
             "packet-size": 128,
-            "duration": 10,
-            "protocol": "TCP",
-            "package-count": 10
+            "duration": 5,
+            "protocol": "UDP",
+            "package-count": 0
         }
     ]
 }

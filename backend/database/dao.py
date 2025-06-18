@@ -75,8 +75,7 @@ class DAO(ABC):
 
         sql = f"SELECT * FROM {self.table_name} {where}"
         self._cur.execute(sql) 
-        return self._cur.fetchall()
-        
+        return self._cur.fetchall()   
 
     def close(self) -> None:
         """Fecha cursor e conexão."""

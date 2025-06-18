@@ -8,6 +8,11 @@ class ResultadosDAO(DAO):
     @property
     def table_name(self) -> str:
         return "resultados"
+    
+    def get_results_params(self):
+        sql = f"SELECT * FROM resultados JOIN testes_de_rede USING(TEST_ID)"
+        self._cur.execute(sql)
+        return self._cur.fetchall()
 
     def create_table(self) -> None:
         """
