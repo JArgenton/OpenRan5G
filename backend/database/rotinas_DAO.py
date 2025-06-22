@@ -14,11 +14,11 @@ class RotinasDAO(DAO):
         Cria testes_de_rede com  parâmetros de configuração do teste.
         """
         self._cur.execute(f"""
-    CREATE TABLE IF NOT EXISTS {self.table_name}(
-        ROUTINE_ID PRIMARY KEY AUTOINCREMENT,
-        NAME TEXT NOT NULL
+        CREATE TABLE IF NOT EXISTS {self.table_name}(
+        ROUTINE_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        NAME TEXT NOT NULL,
         SERVER TEXT NOT NULL,
-        TIME TEXT NOT NULL
+        TIME TEXT NOT NULL,
         ACTIVE BOOL NOT NULL)
         """)
 
@@ -33,6 +33,8 @@ if __name__ == '__main__':
         "TIME" : "17:30",
         "ACTIVE" : 1
     }
+    rotine.insert(dados_teste)
     all = rotine.fetch_all()
     for a in all:
         print(a)
+    #python3 -m backend.database.rotinas_DAO

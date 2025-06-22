@@ -16,8 +16,6 @@ class TestesDeRedeDAO(DAO):
         self._cur.execute(f"""
     CREATE TABLE IF NOT EXISTS {self.table_name} (
         TEST_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        ROUTINE_ID INTEGER,
-        SERVER TEXT NOT NULL,
         PROTOCOL TEXT,
         DURATION_SECONDS REAL,
         PACKET_SIZE INTEGER,
@@ -39,17 +37,13 @@ if __name__ == '__main__':
     #testes_de_rede.create_table()
 
     dados_teste = {
-        "TEST_NAME": "Teste Banda TCP",
-        "SERVER": "10.0.0.5",
         "PROTOCOL": "TCP",
-
         "PACKET_SIZE": 128,
         "PACKET_COUNT": 150,
-        "IS_PING": False,
-        "IS_IPERF": True
     }
+    testes_de_rede.insert(dados_teste)
     all = testes_de_rede.fetch_all()
     for a in all:
-        print(a)
+        print(f"{a} -> {testes_de_rede._cur.lastrowid}")
 
     #(ip, duration, packet_size, packet_count)
