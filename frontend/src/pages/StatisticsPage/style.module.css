@@ -1,0 +1,88 @@
+.formWrapper {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #111;
+    padding: 32px;
+    border: 1px solid #2ecc71;
+    border-radius: 16px;
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: white;
+}
+
+.inlineInputs {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.inlineInputs .inputGroup {
+    flex: 1;
+}
+
+input[type="date"],
+input[type="text"],
+select {
+    padding: 10px 14px;
+    background-color: #2c2c2c;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="date"]::placeholder,
+input[type="text"]::placeholder {
+    color: #aaa;
+}
+
+input[type="date"]:focus,
+input[type="text"]:focus,
+select:focus {
+    border-color: #2ecc71;
+    box-shadow: 0 0 5px #2ecc7140;
+}
+
+label {
+    font-weight: 500;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+/* Tabs */
+
+.tabWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    border-bottom: 1px solid #555;
+}
+
+.tab {
+    padding: 1rem 2rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: #ccc;
+    transition: color 0.2s;
+}
+
+.tab:hover {
+    color: #fff;
+}
+
+.activeTab {
+    border-bottom: 3px solid #2ecc71;
+    color: #2ecc71;
+}
