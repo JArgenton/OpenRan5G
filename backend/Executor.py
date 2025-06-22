@@ -38,11 +38,16 @@ class Executor:
             self.configuration.make_config(packet_size, duration, protocol, package_count)
 
 
-    def format_save_json(self, result, protocol, ping):
+    def format_save_json(self, result, protocol, ping, id, server: str):
         
         obj = {}
-        obj["TIMESTAMP_RESULT"] = result["bandwidth"]["timestamp"]
-        obj["TEST_ID"] = self.databaset.get_latest_id()
+        if protocol == "":
+            obj["TIMESTAMP_RESULT"] =  result["latency"]["timestamp"]
+        else:
+            obj["TIMESTAMP_RESULT"] = result["bandwidth"]["timestamp"]
+        obj["TEST_ID"] = id
+
+        obj["SERVER"] = server
 
         if ping:
             obj["MIN_LATENCY"] = result["latency"]["results"]["min_latency_ms"]
@@ -88,6 +93,7 @@ class Executor:
             _,              # RESULT_ID
             _,              # TEST_ID
             timestamp,      # TIMESTAMP_RESULT
+            server,
             min_latency,    # MIN_LATENCY
             avg_latency,    # AVG_LATENCY
             max_latency,    # MAX_LATENCY
@@ -97,8 +103,6 @@ class Executor:
             bytes_transferred, # BYTES_TRANSFERED
             jitter,         # JITTER
             retransmits,    # RETRANSMITS
-            _,              # ROUTER_ID
-            server,         # SERVER (from testes_de_rede)
             protocol,       # PROTOCOL
             duration,       # DURATION_SECONDS
             packet_size,    # PACKET_SIZE
@@ -158,16 +162,13 @@ class Executor:
 
             result["bandwidth"] = bandwidth
 
-        print(result)
+        #print(result)
 
         return result
 
     
-    def format_save_test(self, test: dict, server: str) -> dict:
+    def format_save_test(self, test: dict) -> dict:
         obj = {}
-
-        # Campo obrigatório
-        obj["SERVER"] = server
 
         # Campos diretos (protocolo pode não estar presente)
         obj["PROTOCOL"] = test.get("protocol", None)
@@ -208,7 +209,6 @@ class Executor:
 
             if test.get("protocol", 0):
                 protocol = test["protocol"]
-                print(protocol)
                 test_result["bandwidth"] = self.execute_iperf3(server, test)
                 
 
@@ -216,10 +216,11 @@ class Executor:
                 ping = True
                 test_result["latency"] = self.execute_ping(server, test)
 
-            formated_result = self.format_save_json(test_result, protocol, ping)
-            formated_test = self.format_save_test(test, server)
+            formated_test = self.format_save_test(test)
+            t_id = self.databaset.get_or_create_test_id(formated_test)
 
-            self.databaset.insert(formated_test)
+            formated_result = self.format_save_json(test_result, protocol, ping, t_id, server)
+            
             self.databaser.insert(formated_result)
 
             results.append(test_result)

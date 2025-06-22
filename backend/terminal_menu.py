@@ -13,7 +13,7 @@ class Menu:
             print("="*40)
             print("1 - Rodar testes")
             print("2 - Rotinas (em breve)")
-            print("3 - Histórico de testes (em breve)")
+            print("3 - Histórico de testes")
             print("4 - Voltar")
             print("-"*40)
 

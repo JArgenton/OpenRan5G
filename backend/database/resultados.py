@@ -25,6 +25,7 @@ class ResultadosDAO(DAO):
         RESULT_ID INTEGER PRIMARY KEY AUTOINCREMENT,
         TEST_ID INTEGER,
         TIMESTAMP_RESULT TEXT NOT NULL,
+        SERVER TEXT NOT NULL,
 
         -- Resultados de Ping
         MIN_LATENCY REAL,
