@@ -5,6 +5,8 @@ from .tests.iperfr3_test import Iperf
 from .configuration.configuration import Configuration_
 from .database.resultados import ResultadosDAO
 from .database.testes_de_rede import TestesDeRedeDAO
+from .programer.routine import Routine
+from .programer.network_test import Test
 
 #export interface Test {
   #ip: string,
@@ -23,7 +25,8 @@ class Executor:
         self.configuration = Configuration_.getObject()
         self.databaser = ResultadosDAO()
         self.databaset = TestesDeRedeDAO()
-        #ResultadosDAO.create_table()
+        
+        
     
     def execute_iperf3(self, server, test):
         return Iperf.run_iperf3(server, test["duration"], test["packet-size"], test["protocol"])
@@ -217,7 +220,7 @@ class Executor:
                 test_result["latency"] = self.execute_ping(server, test)
 
             formated_test = self.format_save_test(test)
-            t_id = self.databaset.get_or_create_test_id(formated_test)
+            t_id = Test.get_or_create_test_id(formated_test)
 
             formated_result = self.format_save_json(test_result, protocol, ping, t_id, server)
             
@@ -232,7 +235,33 @@ class Executor:
 
 if __name__ == "__main__":
     executor = Executor()
-    executor.mainMenu()
+    routine = Routine("Teste3")
+    routine_params = {
+        "SERVER"    : "192.168.0.21",
+        "TIME"      : "16:30",
+        "ACTIVE"    : 1
+    }
+
+    tests = [
+        {
+            "packet-size": 256,
+            "duration": 5,
+            "protocol": "TCP",
+            "package-count": 0
+        },
+        {
+            "packet-size": 128,
+            "duration" : 10,
+            "protocol" : "UDP"
+        }
+    ]
+    formated_tests = [executor.format_save_test(tests[0]), executor.format_save_test(tests[1])]
+
+    routine.create_routine_tests(routine, routine_params, formated_tests)
+    print(Routine.R2T.fetch_all())
+
+
+
 
 
 #(ip, duration, packet_size, packet_count)

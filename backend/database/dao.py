@@ -42,12 +42,17 @@ class DAO(ABC):
         JITTER=None)
     OSS!
     """
-    def insert(self, data: Dict[str, Any]) -> None:
+    def insert(self, data: Dict[str, Any]) -> bool:
         cols = ", ".join(data.keys())
         placeholders = ", ".join("?" for _ in data)
-        sql = f"INSERT INTO {self.table_name} ({cols}) VALUES ({placeholders})"
-        self._cur.execute(sql, tuple(data.values()))
-        self._conn.commit()
+        try:
+            sql = f"INSERT INTO {self.table_name} ({cols}) VALUES ({placeholders})"
+            self._cur.execute(sql, tuple(data.values()))
+            self._conn.commit()
+            return True
+        except Exception as e:
+            print(f'Erro ao inserir valor na tabela: {e}')
+            return False
 
     def fetch_all(self) -> List[Tuple]:
         """Retorna todas as linhas da tabela."""

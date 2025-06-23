@@ -12,8 +12,10 @@ class _Relacionamento_R2T(DAO):
 
         self._cur.execute(f"""
             CREATE TABLE IF NOT EXISTS {self.table_name} (
+                TEST_ID INTEGER NOT NULL,
+                ROUTINE_ID INTEGER NOT NULL,
                 FOREIGN KEY (TEST_ID) REFERENCES testes_de_rede(TEST_ID),
-                FOREIGN KEY (ROUTINE_ID) REFERENCES rotinas(ROUTINE_ID),
+                FOREIGN KEY (ROUTINE_ID) REFERENCES rotinas(ROUTINE_ID)
             )
         """)
         self._conn.commit()

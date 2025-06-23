@@ -16,13 +16,19 @@ class RotinasDAO(DAO):
         self._cur.execute(f"""
         CREATE TABLE IF NOT EXISTS {self.table_name}(
         ROUTINE_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        NAME TEXT NOT NULL,
+        NAME TEXT NOT NULL UNIQUE,
         SERVER TEXT NOT NULL,
         TIME TEXT NOT NULL,
         ACTIVE BOOL NOT NULL)
         """)
 
         self._conn.commit()
+
+    def get_latest_id(self):
+        sql = f"SELECT MAX(ROUTINE_ID) FROM {self.table_name}"
+        self._cur.execute(sql)
+        result = self._cur.fetchone()
+        return result[0] if result else None  
 
 if __name__ == '__main__':
     rotine = RotinasDAO()

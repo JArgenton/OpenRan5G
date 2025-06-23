@@ -1,5 +1,5 @@
 # network_test.py (AJUSTADO)
-from database.testes_de_rede import TestesDeRedeDAO
+from ..database.testes_de_rede import TestesDeRedeDAO
 
 class Test:
     database = TestesDeRedeDAO()
@@ -20,13 +20,34 @@ class Test:
         """
         Insere os dados de um objeto Test no banco de dados e retorna o ID gerado.
         """
-        data = {
-            "PROTOCOL" : test_obj["PROTOCOL"],
-            "DURATION_SECONDS": test_obj["DURATION_SECONDS"],
-            "PACKET_SIZE": test_obj["PACKET_SIZE"],
-            "PACKET_COUNT": test_obj["PACKET_COUNT"]
-        }
-        Test.database.insert(data)
+        Test.database.insert(test_obj)
         test_id = Test.database._cur.lastrowid
         print(f"Test data sent to database for insertion. Test ID: {test_id}")
         return test_id
+    @staticmethod
+    def get_or_create_test_id(dados_teste: dict) -> int:
+        conditions = []
+        values = []
+
+        for field in ["PROTOCOL", "DURATION_SECONDS", "PACKET_SIZE", "PACKET_COUNT"]:
+            val = dados_teste.get(field)
+            if val is None:
+                conditions.append(f"{field} IS NULL")
+            else:
+                conditions.append(f"{field} = ?")
+                values.append(val)
+
+        sql = f"""
+            SELECT TEST_ID FROM testes_de_rede
+            WHERE {" AND ".join(conditions)}
+        """
+
+        Test.database._cur.execute(sql, values)
+        result = Test.database._cur.fetchone()
+
+        if result:
+            return result[0]
+
+        # Inserir se não encontrou
+        Test.database.insert(data=dados_teste)
+        return Test.database.get_latest_id()
