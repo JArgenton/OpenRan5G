@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 from .Executor import Executor
 from typing import List
 from fastapi.responses import JSONResponse # type: ignore
+from fastapi.responses import FileResponse #type: ignore
+import os
 
 app = FastAPI()
 
@@ -37,10 +39,32 @@ def run_tests(tests: List[dict]):
     
 @app.get("/api/log")
 def get_data_log():
-    data = executor.load_data()
+    data = executor.load_results()
     #print(data)
     return data
 
+@app.post("/api/plotting")
+def plotGraphic(pltConfig: dict):
+    if pltConfig.get("startDate", 0):
+        filename = executor.plotGraphic(pltConfig["server"].strip(), pltConfig["xParam"], pltConfig["yParam"], [pltConfig["startDate"], pltConfig["finalDate"]])
+        if not filename or not os.path.exists(filename):
+            return {"error": "Gráfico não gerado"}
+
+        return FileResponse(
+            path=filename,
+            media_type="image/png",
+            filename=os.path.basename(filename)
+        )
     
             
             
+"""
+        interface plotParams {
+        server: string,
+        routineName?: string,
+        startDate?: string,
+        finalDate?: string,
+        xParam?: string,
+        yParam: string
+    }
+    """

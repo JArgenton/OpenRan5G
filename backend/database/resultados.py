@@ -9,8 +9,13 @@ class ResultadosDAO(DAO):
     def table_name(self) -> str:
         return "resultados"
     
-    def get_results_params(self):
-        sql = f"SELECT * FROM resultados JOIN testes_de_rede USING(TEST_ID)"
+    def get_results_params(self, where: str = "", select: str = ""):
+        sl = "*"
+        if select != "":
+            sl = select
+        sql = f"SELECT {sl} FROM resultados JOIN testes_de_rede USING(TEST_ID)"
+        if where != "":
+            sql += f' {where}'
         self._cur.execute(sql)
         return self._cur.fetchall()
 
@@ -19,7 +24,6 @@ class ResultadosDAO(DAO):
         Cria 'resultados' com medições e resultados do teste.
         chave para testes de rede
         """
-        #test_id tem q ser routine ID
         self._cur.execute(f"""   
         CREATE TABLE IF NOT EXISTS {self.table_name} (
         RESULT_ID INTEGER PRIMARY KEY AUTOINCREMENT,

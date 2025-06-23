@@ -51,3 +51,30 @@ class Test:
         # Inserir se não encontrou
         Test.database.insert(data=dados_teste)
         return Test.database.get_latest_id()
+    
+    @staticmethod
+    def format_save_test(test: dict) -> dict:
+        obj = {}
+
+        # Campos diretos (protocolo pode não estar presente)
+        obj["PROTOCOL"] = test.get("protocol", None)
+
+        # duration
+        try:
+            obj["DURATION_SECONDS"] = float(test.get("duration", None))
+        except (TypeError, ValueError):
+            obj["DURATION_SECONDS"] = None
+
+        # packet-size
+        try:
+            obj["PACKET_SIZE"] = int(test.get("packet-size", None))
+        except (TypeError, ValueError):
+            obj["PACKET_SIZE"] = None
+
+        # package-count (ping)
+        try:
+            obj["PACKET_COUNT"] = int(test.get("package-count", None))
+        except (TypeError, ValueError):
+            obj["PACKET_COUNT"] = None
+
+        return obj

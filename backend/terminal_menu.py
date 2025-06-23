@@ -58,7 +58,7 @@ class Menu:
                 input("Comando inválido. Pressione Enter para continuar.")
 
     def data_log(self):
-        data = self.executor.load_data()
+        data = self.executor.load_results()
         return data
 
     def build_tests(self):

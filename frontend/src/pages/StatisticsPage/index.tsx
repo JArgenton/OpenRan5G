@@ -1,78 +1,78 @@
+// Atualização no React para usar os valores idênticos às colunas do banco
+
 import DefaultHeader from "../../Components/DefaultHeader";
 import { useState } from "react";
 import style from "./style.module.css";
 import DefaultButton from "../../Components/DefaultButton";
+
+interface plotParams {
+    server: string,
+    routineName?: string,
+    startDate?: string,
+    finalDate?: string,
+    xParam?: string,
+    yParam: string
+}
 
 export default function StatisticsPage() {
     const [activeTab, setActiveTab] = useState<"Time interval" | "Routine">("Time interval");
     const [startDate, setStartDate] = useState<string>("");
     const [finalDate, setFinalDate] = useState<string>("");
 
-    const [xParam, setXParam] = useState<string>("packet_size");
-    const [yParam, setYParam] = useState<string>("avg_latency_ms");
-    const [routineParam, setRoutineParam] = useState<string>("avg_latency_ms");
-    const [routineID, setRoutineID] = useState<string>("");
-    const [routineError, setRoutineError] = useState<string>("");
+    const [xParam, setXParam] = useState<string>("PACKET_SIZE");
+    const [yParam, setYParam] = useState<string>("AVG_LATENCY");
+    const [routineParam, setRoutineParam] = useState<string>("AVG_LATENCY");
+    const [routineName, setRoutineName] = useState<string>("");
     const [server, setServer] = useState<string>("");
 
     const [plotUrl, setPlotUrl] = useState<string | null>(null);
 
     const entryParams = [
-        { label: "Tamanho do pacote", value: "packet_size" },
-        { label: "Duração do teste", value: "duration_seconds" },
-        { label: "Contagem de pacotes", value: "packet_count" }
+        { label: "Tamanho do pacote", value: "PACKET_SIZE" },
+        { label: "Duração do teste", value: "DURATION_SECONDS" },
+        { label: "Contagem de pacotes", value: "PACKET_COUNT" }
     ];
 
     const resultParams = [
-        { label: "Latência mínima", value: "min_latency_ms" },
-        { label: "Latência média", value: "avg_latency_ms" },
-        { label: "Latência máxima", value: "max_latency_ms" },
-        { label: "Bits por segundo", value: "bits_per_second" },
-        { label: "Bytes transferidos", value: "bytes_transferred" },
-        { label: "Jitter", value: "jitter" },
-        { label: "Retransmissões", value: "retransmits" },
-        { label: "Perda de pacotes (%)", value: "lost_percent" }
+        { label: "Latência mínima", value: "MIN_LATENCY" },
+        { label: "Latência média", value: "AVG_LATENCY" },
+        { label: "Latência máxima", value: "MAX_LATENCY" },
+        { label: "Bits por segundo", value: "BITS_PER_SECOND" },
+        { label: "Bytes transferidos", value: "BYTES_TRANSFERED" },
+        { label: "Jitter", value: "JITTER" },
+        { label: "Retransmissões", value: "RETRANSMITS" },
+        { label: "Perda de pacotes (%)", value: "LOST_PERCENT" }
     ];
 
-    function handleRoutineIdChange(value: string) {
-        const onlyNumbers = value.replace(/\D/g, "");
-        setRoutineID(onlyNumbers);
-
-        const parsed = parseInt(onlyNumbers);
-        if (!onlyNumbers || isNaN(parsed) || parsed < 0) {
-            setRoutineError("Insira um ID numérico válido.");
-        } else {
-            setRoutineError("");
-        }
-    }
-
     async function handlePlotGraphic() {
-        if ((routineID === "" && activeTab === "Routine") ||
-            (activeTab === "Time interval" && (startDate === "" || finalDate === "")) ||
-            !server.match(/^((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.|$)){4}$/)) {
-            console.warn("Verificação de entrada falhou");
-            return;
-        }
-
         console.log("[RUN TESTS] iniciando fetch", new Date().toISOString());
 
-        let plotParams = {};
+        if(server === "" || (activeTab === "Time interval" && (startDate === "" || finalDate === "") || (activeTab === "Routine" && (routineName === "")))){
+            console.log("Complete as informações corretamente")
+            return
+        }  
+
+        let plotParams: plotParams = {
+            server: "",
+            yParam: ""
+        };
 
         if (activeTab === "Routine") {
             plotParams = {
                 server,
-                RoutineID: routineID,
-                RoutineParam: routineParam,
+                routineName,
+                yParam: routineParam
             };
         } else {
             plotParams = {
                 server,
-                StartDate: startDate,
-                FinalDate: finalDate,
+                startDate,
+                finalDate,
                 xParam,
                 yParam,
             };
         }
+        console.log(plotParams)
 
         const res = await fetch("http://localhost:8000/api/plotting", {
             method: "POST",
@@ -154,14 +154,13 @@ export default function StatisticsPage() {
                     {activeTab === "Routine" && (
                         <>
                             <div className={style.inputGroup}>
-                                <label>ID da rotina:</label>
+                                <label>Nome da rotina:</label>
                                 <input
                                     type="text"
-                                    placeholder="Routine ID"
-                                    value={routineID}
-                                    onChange={(e) => handleRoutineIdChange(e.target.value)}
+                                    placeholder="Routine name"
+                                    value={routineName}
+                                    onChange={(e) => setRoutineName(e.target.value)}
                                 />
-                                {routineError && <p style={{ color: "#e74c3c", marginTop: "4px" }}>{routineError}</p>}
                             </div>
 
                             <div className={style.inputGroup}>
@@ -179,7 +178,7 @@ export default function StatisticsPage() {
             )}
 
             {plotUrl && (
-                <div style={{ marginTop: "2rem", textAlign: "center" }}>
+                <div style={{ marginTop: "2rem", textAlign: "center" }} onClick={() => setPlotUrl(null)}>
                     <img
                         src={plotUrl}
                         alt="Gráfico gerado"
