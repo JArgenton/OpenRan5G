@@ -57,6 +57,9 @@ export default function StatisticsPage() {
             yParam: ""
         };
 
+        const formattedStartDate = startDate.replace("T", " ");
+        const formattedFinalDate = finalDate.replace("T", " ");
+
         if (activeTab === "Routine") {
             plotParams = {
                 server,
@@ -66,12 +69,12 @@ export default function StatisticsPage() {
         } else {
             plotParams = {
                 server,
-                startDate,
-                finalDate,
+                startDate: formattedStartDate,
+                finalDate: formattedFinalDate,
                 xParam,
                 yParam,
             };
-        }
+}
         console.log(plotParams)
 
         const res = await fetch("http://localhost:8000/api/plotting", {
@@ -123,11 +126,11 @@ export default function StatisticsPage() {
                             <div className={style.inlineInputs}>
                                 <div className={style.inputGroup}>
                                     <label>Start date:</label>
-                                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                                    <input type="datetime-local" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                                 </div>
                                 <div className={style.inputGroup}>
                                     <label>Final date:</label>
-                                    <input type="date" value={finalDate} onChange={(e) => setFinalDate(e.target.value)} />
+                                    <input type="datetime-local" value={finalDate} onChange={(e) => setFinalDate(e.target.value)} />
                                 </div>
                             </div>
 

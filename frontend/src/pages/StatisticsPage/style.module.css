@@ -30,7 +30,7 @@
     flex: 1;
 }
 
-input[type="date"],
+input[type="datetime-local"],
 input[type="text"],
 select {
     padding: 10px 14px;
@@ -43,12 +43,12 @@ select {
     transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
-input[type="date"]::placeholder,
+input[type="datetime-local"]::placeholder,
 input[type="text"]::placeholder {
     color: #aaa;
 }
 
-input[type="date"]:focus,
+input[type="datetime-local"]:focus,
 input[type="text"]:focus,
 select:focus {
     border-color: #2ecc71;

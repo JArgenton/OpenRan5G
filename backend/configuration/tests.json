@@ -1,39 +1,45 @@
 {
     "tests": [
         {
+            "packet-size": 16,
+            "duration": 5,
+            "protocol": "TCP",
+            "package-count": 0
+        },
+        {
             "packet-size": 32,
             "duration": 5,
-            "protocol": "UDP",
+            "protocol": "TCP",
             "package-count": 0
         },
         {
             "packet-size": 64,
             "duration": 5,
-            "protocol": "UDP",
+            "protocol": "TCP",
             "package-count": 0
         },
         {
             "packet-size": 128,
             "duration": 5,
-            "protocol": "UDP",
+            "protocol": "TCP",
             "package-count": 0
         },
         {
             "packet-size": 256,
             "duration": 5,
-            "protocol": "UDP",
+            "protocol": "TCP",
             "package-count": 0
         },
         {
             "packet-size": 512,
             "duration": 5,
-            "protocol": "UDP",
+            "protocol": "TCP",
             "package-count": 0
         },
         {
             "packet-size": 1024,
             "duration": 5,
-            "protocol": "UDP",
+            "protocol": "TCP",
             "package-count": 0
         }
     ]

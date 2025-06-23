@@ -13,8 +13,6 @@ class Plotter:
     def getValuesByTime(self, server, xParam: str, yParam: str, date: list[str]):
         self.xParam = []
         self.yParam = []
-        date[0] += " 00:00:00"
-        date[1] += " 23:59:59"
         where = f"WHERE SERVER = '{server}' AND TIMESTAMP_RESULT BETWEEN '{date[0]}' AND '{date[1]}'"
         select = f'{xParam}, {yParam}'
         
@@ -28,8 +26,8 @@ class Plotter:
                         self.yParam[index][0] += dt[1]
                         self.yParam[index][1] += 1
                     else:
-                            self.xParam.append(dt[0])
-                            self.yParam.append([dt[1], 1])
+                        self.xParam.append(dt[0])
+                        self.yParam.append([dt[1], 1])
 
                         
         for i in range(0, len(self.yParam)):
