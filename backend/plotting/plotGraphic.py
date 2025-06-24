@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt # type: ignore
 from ..programer.results import Result
 from datetime import datetime
 import os
+from ..programer.routine import Routine
 
 class Plotter:
     def __init__(self):
@@ -33,6 +34,19 @@ class Plotter:
         for i in range(0, len(self.yParam)):
             y = self.yParam[i]
             self.yParam[i] = y[0]/y[1]
+
+    def getValuesByRoutine(self, server: str, routineName: str, yParam: str):
+        self.xParam = []
+        self.yParam = []
+        r_id = Routine.getRoutineID(routineName)
+        where = f"WHERE ROUTINE_ID = '{r_id}'"
+        select = f"{yParam}"
+        data = Result.database.get_results_params(where, select)
+        counter = 0
+        for dt in data:
+            self.xParam.append(counter)
+            counter += 1
+            self.yParam.append(dt[0])
     
     def generateGraphic(self, xLabel="X", yLabel="Y", title="Gráfico") -> str | None:
         if not self.xParam or not self.yParam:
@@ -59,6 +73,8 @@ class Plotter:
         #plt.show()
         plt.close()
         return filename
+    
+
     
 
     

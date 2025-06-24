@@ -33,7 +33,8 @@ class TestesDeRedeDAO(DAO):
     
     def get_tests_by_RID(self, r_id: int):
         sql = f"SELECT TEST_ID, PROTOCOL, DURATION_SECONDS, PACKET_SIZE, PACKET_COUNT FROM {self.table_name} JOIN relacionamentos_R2T USING(TEST_ID) WHERE ROUTINE_ID = ?"
-        self._cur.execute(sql, r_id)
+        self._cur.execute(sql, (r_id,))
+        return self._cur.fetchall()
 
 
 

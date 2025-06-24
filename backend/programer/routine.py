@@ -1,6 +1,7 @@
 from ..database.rotinas_DAO import RotinasDAO
 from ..database.relacionamentos_R2T import _Relacionamento_R2T as R2T_DAO
 from .network_test import Test
+from .results import Result
 
 
 class Routine:
@@ -45,7 +46,7 @@ class Routine:
                 print(f"AVISO: Não foi possível obter test_id para os dados: {test_data_dict}")
 
             Routine.R2T.insert(relationship_data)
-
+    @staticmethod
     def formatRoutineJson(routine):
         return{
             "ROUTINE_ID": routine[0],
@@ -54,4 +55,76 @@ class Routine:
             "TIME": routine[3],
             "ACTIVE": routine[4]
         }
+    
+    def getRoutineID(routine_name):
+        return Routine.routine_table.fetch_where(f"WHERE NAME = '{routine_name}'")
+        
+    
+    @staticmethod
+    def getRoutineResultsByName(rName: str):
+        sql = f"""
+            SELECT 
+                res.RESULT_ID,
+                res.ROUTINE_ID,
+                t.TEST_ID,
+                res.TIMESTAMP_RESULT,
+                res.SERVER,
+                res.MIN_LATENCY,
+                res.AVG_LATENCY,
+                res.MAX_LATENCY,
+                res.LOST_PACKETS,
+                res.LOST_PERCENT,
+                res.BITS_PER_SECOND,
+                res.BYTES_TRANSFERED,
+                res.JITTER,
+                res.RETRANSMITS,
+                t.PROTOCOL,
+                t.DURATION_SECONDS,
+                t.PACKET_SIZE,
+                t.PACKET_COUNT
+            FROM {Routine.R2T.table_name} r2t
+            JOIN {Test.database.table_name} t ON t.TEST_ID = r2t.TEST_ID
+            JOIN {Result.database.table_name} res ON res.TEST_ID = t.TEST_ID
+            JOIN {Routine.routine_table.table_name} rout ON rout.NAME = ?
+        """
+        Routine.routine_table._cur.execute(sql, (rName,))
+        return Routine.routine_table._cur.fetchall()
+        
+
+    @staticmethod
+    def getRoutineTestResults(r_id, t_id):
+        sql = f"""
+            SELECT 
+                res.RESULT_ID,
+                res.ROUTINE_ID,
+                t.TEST_ID,
+                res.TIMESTAMP_RESULT,
+                res.SERVER,
+                res.MIN_LATENCY,
+                res.AVG_LATENCY,
+                res.MAX_LATENCY,
+                res.LOST_PACKETS,
+                res.LOST_PERCENT,
+                res.BITS_PER_SECOND,
+                res.BYTES_TRANSFERED,
+                res.JITTER,
+                res.RETRANSMITS,
+                t.PROTOCOL,
+                t.DURATION_SECONDS,
+                t.PACKET_SIZE,
+                t.PACKET_COUNT
+            FROM {Routine.R2T.table_name} r2t
+            JOIN {Test.database.table_name} t ON t.TEST_ID = r2t.TEST_ID
+            JOIN {Result.database.table_name} res ON res.TEST_ID = t.TEST_ID
+            WHERE r2t.ROUTINE_ID = ?
+            AND t.TEST_ID = ?
+            AND res.ROUTINE_ID = ?
+        """
+        try:
+            Routine.routine_table._cur.execute(sql, (r_id, t_id, r_id))
+            results = Routine.routine_table._cur.fetchall()
+            return results if results else []
+        except Exception as e:
+            print(f"[ERRO SQL getRoutineTestResults] {e}")
+            return []
 

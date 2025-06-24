@@ -9,6 +9,8 @@ import RoutinePage from './pages/RoutinePage'
 import AddRoutine from './pages/AddRoutine'
 import GetRoutines from './pages/GetRoutines'
 import ResultsPage from './pages/ResultsPage'
+import TestPage from './pages/TestPage'
+import TestResultPage from './pages/TestResultPage'
 
 export const routes: RouteObject[] = [
   { path: '/', element: <MainMenu /> },
@@ -21,4 +23,6 @@ export const routes: RouteObject[] = [
   { path: '/routine/add', element: <AddRoutine /> },
   { path: '/routine/saved', element: <GetRoutines /> },
   { path: '/results', element: <ResultsPage /> },
+  { path: '/routine/:routineId/testes', element: <TestPage /> },
+  { path: '/results/:testId/:routineId', element: <TestResultPage /> }
 ]

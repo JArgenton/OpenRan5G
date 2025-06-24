@@ -1,0 +1,9 @@
+.container {
+  padding: 1.5rem;
+}
+
+.testList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}

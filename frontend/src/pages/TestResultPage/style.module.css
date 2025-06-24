@@ -1,0 +1,28 @@
+/* style.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* Espaço entre os ResultCards */
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.loading,
+.error {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+  margin-top: 50px;
+}
+
+.error {
+  color: #d9534f; /* vermelho suave para erro */
+}
+
+.separator {
+  height: 1px;
+  background-color: #ddd;
+  margin: 20px 0;
+}

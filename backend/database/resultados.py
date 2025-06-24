@@ -27,6 +27,7 @@ class ResultadosDAO(DAO):
         self._cur.execute(f"""   
         CREATE TABLE IF NOT EXISTS {self.table_name} (
         RESULT_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        ROUTINE_ID INTEGER,
         TEST_ID INTEGER,
         TIMESTAMP_RESULT TEXT NOT NULL,
         SERVER TEXT NOT NULL,

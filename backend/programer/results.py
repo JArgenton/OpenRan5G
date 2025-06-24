@@ -17,9 +17,11 @@ class Result:
         return {"results": formated_results}
     
     @staticmethod
-    def format_save_json(result, protocol, ping, id, server: str):
+    def format_save_json(result, protocol, ping, id, server: str, routine_id: int = -1):
         
         obj = {}
+        if routine_id != -1:
+            obj["ROUTINE_ID"] = routine_id
         if protocol == "":
             obj["TIMESTAMP_RESULT"] =  result["latency"]["timestamp"]
         else:
@@ -52,6 +54,7 @@ class Result:
     def format_result_json(row: tuple) -> dict:
         (
             _,              # RESULT_ID
+            _,     # ROUTINE_ID
             _,              # TEST_ID
             timestamp,      # TIMESTAMP_RESULT
             server,

@@ -22,7 +22,7 @@ export default function RoutineCard({ routine, onToggleActive }: RoutineCardProp
   };
 
   const handleViewTests = () => {
-    navigate(`/rotinas/${routine.ROUTINE_ID}/testes`);
+    navigate(`/routine/${routine.ROUTINE_ID}/testes`);
   };
 
   return (

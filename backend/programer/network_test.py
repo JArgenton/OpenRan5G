@@ -78,3 +78,14 @@ class Test:
             obj["PACKET_COUNT"] = None
 
         return obj
+    
+    def format_tests_json(test: tuple):
+        return {
+            "TEST_ID": test[0],
+            "PROTOCOL": test[1],
+            "DURATION_SECONDS": test[2],
+            "PACKET_SIZE": test[3],
+            "PACKET_COUNT": test[4]
+        }
+
+    #TEST_ID, PROTOCOL, DURATION_SECONDS, PACKET_SIZE, PACKET_COUNT

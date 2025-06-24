@@ -49,9 +49,13 @@ class Executor:
     def run_server(self):
         Iperf.run_iperf3_server()
 
-    def plotGraphic(self,server: str, xParam: str, yParam: str, date: list[str]):
+    def plotGraphicByTime(self,server: str, xParam: str, yParam: str, date: list[str]):
         self.plotter.getValuesByTime(server, xParam, yParam, date)
         return self.plotter.generateGraphic(xParam, yParam)
+    
+    def plotGraphicByRoutine(self, server: str, routineName: str, yParam: str):
+        self.plotter.getValuesByRoutine(server, routineName, yParam)
+        return self.plotter.generateGraphic("", yParam)
 
     """
     Retorno resultados
@@ -63,15 +67,31 @@ class Executor:
     def getRoutines(self):
         routines = Routine.routine_table.fetch_all()
         formated_routines = []
+        if routines is None:
+            return {"routines": []}
         for routine in routines:
             formated_routines.append(Routine.formatRoutineJson(routine))
         return {"routines": formated_routines}
     
-    def getRoutineTests(r_id: int):
+    def getRoutineTests(self, r_id: int):
         tests = Test.database.get_tests_by_RID(r_id)
         formated_tests = []
+        if tests is None: 
+            return {"tests": []}
         for test in tests:
-            ...
+            formated_tests.append(Test.format_tests_json(test)) #TEST_ID, PROTOCOL, DURATION_SECONDS, PACKET_SIZE, PACKET_COUNT
+            print(formated_tests)
+        return {"tests": formated_tests}
+    
+    def getRoutineTestResults(self, r_id: int, t_id: int):
+        results = Routine.getRoutineTestResults(r_id, t_id)
+        fromated_results = []
+        if results is None: 
+            return {"results": []}
+        for result in results:
+            fromated_results.append(Result.format_result_json(result))
+            print(fromated_results)
+        return {"results": fromated_results}
         
     def activateRoutine(self, r_id, active, time):
         if(active):
@@ -90,7 +110,7 @@ class Executor:
         
         print(Test.database.fetch_all())
 
-    def run_tests(self, server):    
+    def run_tests(self, server, routine_id = -1):    
         with open('backend/configuration/tests.json', 'r') as file:
             data = json.load(file)
 
@@ -111,10 +131,10 @@ class Executor:
                 test_result["latency"] = self.execute_ping(server, test)
 
             formated_test = Test.format_save_test(test)
-            print(formated_test)
+            #print(formated_test)
             t_id = Test.get_or_create_test_id(formated_test)
 
-            formated_result = Result.format_save_json(test_result, protocol, ping, t_id, server)
+            formated_result = Result.format_save_json(test_result, protocol, ping, t_id, server, routine_id)
             
             Result.database.insert(formated_result)
 

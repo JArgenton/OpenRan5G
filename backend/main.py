@@ -5,6 +5,7 @@ from typing import List
 from fastapi.responses import JSONResponse # type: ignore
 from fastapi.responses import FileResponse #type: ignore
 import os
+from fastapi import Path # type: ignore
 
 app = FastAPI()
 
@@ -46,16 +47,19 @@ def get_data_log():
 @app.post("/api/plotting")
 def plotGraphic(pltConfig: dict):
     if pltConfig.get("startDate", 0):
-        filename = executor.plotGraphic(pltConfig["server"].strip(), pltConfig["xParam"], pltConfig["yParam"], [pltConfig["startDate"], pltConfig["finalDate"]])
-        if not filename or not os.path.exists(filename):
-            return {"error": "Gráfico não gerado"}
+        filename = executor.plotGraphicByTime(pltConfig["server"].strip(), pltConfig["xParam"], pltConfig["yParam"], [pltConfig["startDate"], pltConfig["finalDate"]])
+    if pltConfig.get("routineName", 0):
+        filename = executor.plotGraphicByRoutine(pltConfig["server"], pltConfig["routineName"], pltConfig["yParam"])
 
-        return FileResponse(
-            path=filename,
-            media_type="image/png",
-            filename=os.path.basename(filename)
-        )
-    
+    if not filename or not os.path.exists(filename):
+        return {"error": "Gráfico não gerado"}
+
+    return FileResponse(
+        path=filename,
+        media_type="image/png",
+        filename=os.path.basename(filename)
+    )
+
 @app.post("/api/routine")
 def insertRoutine(rtParams: dict):
     print(rtParams)
@@ -70,5 +74,12 @@ def toggleActivate(params: dict):
     executor.activateRoutine(params["r_id"], params["active"], params["time"])  
 
 @app.get("/api/routine/{routine_id}/tests")
-def get_routine_tests(routine_id: int):
-    ...         
+def get_routine_tests(routine_id: str):
+    return executor.getRoutineTests(int(routine_id))  
+
+@app.get("/api/results/{testId}/{routineId}")
+def get_routine_tests_results(
+    testId: int = Path(..., description="ID do teste"),
+    routineId: int = Path(..., description="ID da rotina")
+):
+    return executor.getRoutineTestResults(routineId, testId)
