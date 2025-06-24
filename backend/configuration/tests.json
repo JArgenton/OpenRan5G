@@ -2,9 +2,15 @@
     "tests": [
         {
             "packetSize": 256,
-            "duration": 5,
+            "duration": 10,
+            "protocol": "UDP",
+            "pingPackets": 10
+        },
+        {
+            "packetSize": 256,
+            "duration": 10,
             "protocol": "TCP",
-            "pingPackets": 0
+            "pingPackets": 10
         }
     ]
 }
