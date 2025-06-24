@@ -66,6 +66,12 @@ class Executor:
         for routine in routines:
             formated_routines.append(Routine.formatRoutineJson(routine))
         return {"routines": formated_routines}
+    
+    def getRoutineTests(r_id: int):
+        tests = Test.database.get_tests_by_RID(r_id)
+        formated_tests = []
+        for test in tests:
+            ...
         
     def activateRoutine(self, r_id, active, time):
         if(active):
