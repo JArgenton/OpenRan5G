@@ -9,6 +9,7 @@ from .programer.routine import Routine
 from .programer.network_test import Test
 from .programer.results import Result
 from .plotting.plotGraphic import Plotter
+from .database.relacionamentos_R2T import _Relacionamento_R2T as R2T
 
 #export interface Test {
   #ip: string,
@@ -30,10 +31,10 @@ class Executor:
         
     
     def execute_iperf3(self, server, test):
-        return Iperf.run_iperf3(server, test["duration"], test["packet-size"], test["protocol"])
+        return Iperf.run_iperf3(server, test["duration"], test["packetSize"], test["protocol"])
     
     def execute_ping(self, server, test):
-        return Ping.run_ping(server, test["package-count"])
+        return Ping.run_ping(server, test["pingPackets"])
     
     def insert_tests(self, packet_size: int, duration: int, protocol: str = "none", ntests: int = 1, package_count: int = -1):
         if ntests < 0:
@@ -58,6 +59,30 @@ class Executor:
     """
     def load_results(self, where: str = ""):
         return Result.load_results_data(where)
+    
+    def getRoutines(self):
+        routines = Routine.routine_table.fetch_all()
+        formated_routines = []
+        for routine in routines:
+            formated_routines.append(Routine.formatRoutineJson(routine))
+        return {"routines": formated_routines}
+        
+    def activateRoutine(self, r_id, active, time):
+        if(active):
+            Routine.routine_table.deactivate_routine_by_time(time)
+        Routine.routine_table.activate_routine(r_id, active)
+        
+    
+    def createRoutine(self, rtParams: dict):
+        formated_tests = []
+        for test in rtParams["tests"]:
+            formated_tests.append(Test.format_save_test(test))
+        Routine.create_routine_tests(rtParams["params"], formated_tests)
+        print(Routine.R2T.fetch_all())
+        print(Routine.routine_table.fetch_all())
+        print(Test.database.fetch_all())
+        
+        print(Test.database.fetch_all())
 
     def run_tests(self, server):    
         with open('backend/configuration/tests.json', 'r') as file:
@@ -75,11 +100,12 @@ class Executor:
                 test_result["bandwidth"] = self.execute_iperf3(server, test)
                 
 
-            if test.get("package-count", 0):
+            if test.get("pingPackets", 0):
                 ping = True
                 test_result["latency"] = self.execute_ping(server, test)
 
             formated_test = Test.format_save_test(test)
+            print(formated_test)
             t_id = Test.get_or_create_test_id(formated_test)
 
             formated_result = Result.format_save_json(test_result, protocol, ping, t_id, server)
@@ -104,13 +130,13 @@ if __name__ == "__main__":
 
     tests = [
         {
-            "packet-size": 256,
+            "packetSize": 256,
             "duration": 5,
             "protocol": "TCP",
-            "package-count": 0
+            "pingPackets": 0
         },
         {
-            "packet-size": 128,
+            "packetSize": 128,
             "duration" : 10,
             "protocol" : "UDP"
         }

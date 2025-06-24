@@ -56,15 +56,19 @@ def plotGraphic(pltConfig: dict):
             filename=os.path.basename(filename)
         )
     
-            
-            
-"""
-        interface plotParams {
-        server: string,
-        routineName?: string,
-        startDate?: string,
-        finalDate?: string,
-        xParam?: string,
-        yParam: string
-    }
-    """
+@app.post("/api/routine")
+def insertRoutine(rtParams: dict):
+    print(rtParams)
+    executor.createRoutine(rtParams)
+
+@app.get("/api/routine/saved")
+def getSavedRoutines():
+    return executor.getRoutines()
+
+@app.post("/api/routine/activate")
+def toggleActivate(params: dict):
+    executor.activateRoutine(params["r_id"], params["active"], params["time"])  
+
+@app.get("/api/routine/{routine_id}/tests")
+def get_routine_tests(routine_id: int):
+    ...         

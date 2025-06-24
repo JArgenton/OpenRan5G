@@ -82,8 +82,8 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
     if (!validateFields()) return;
 
     let protocol
-    if (tcp) protocol = 'tcp'
-    else if (udp) protocol = 'udp'
+    if (tcp) protocol = 'TCP'
+    else if (udp) protocol = 'UDP'
     else protocol = 'none'
 
     const test: Test = {

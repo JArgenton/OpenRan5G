@@ -4,13 +4,52 @@ import DefaultHeader from "../../Components/DefaultHeader"
 import TestForm, { Test } from "../../Components/TestForm"
 import style from "./style.module.css"
 
+interface routineParams{
+    params: {
+        routineName: string,
+        server: string,
+        time: string
+    },
+    tests: Test[]
+}
+
 export default function AddRoutine() {
     const [tests, setTests] = useState<Test[]>([])
     const [time, setTime] = useState<string>("")
     const [activeTab, setActiveTab] = useState<"client" | "server">("client")
+    const [routineName, setRoutineName] = useState<string>("")
+
+    async function handleSaveRoutine(){
+        if(!tests.length || routineName === "" || time === "")
+            return
+
+        const rtParams: routineParams = {
+            params: {
+                routineName,
+                server: tests[0].ip,
+                time
+            },
+            tests
+        }
+
+        const res = await fetch("http://localhost:8000/api/routine", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(rtParams)
+        });
+
+        if(!res.ok) console.log("Erro ao inserir rotina")
+
+        setTests([]);
+        setRoutineName("");
+        setTime("");
+    }
 
     function handleTestForm(test: Test[]) {
+        console.log(test)
         setTests([...tests, ...test])
+        console.log(tests)
+        //console.log(test)
     }
 
     return (
@@ -67,8 +106,17 @@ export default function AddRoutine() {
                                 placeholder="Enter the test time"
                             />
                         </div>
+                        <div className={style.inputWrapper}>
+                            <input
+                                type="text"
+                                className={style.ipInput}
+                                value={routineName}
+                                onChange={(e) => setRoutineName(e.target.value)}
+                                placeholder="Routine name"
+                            />
+                        </div>
                         <div className={style.buttonWrapper}>
-                            <DefaultButton text="Save Routine" callback={() => {}} />
+                            <DefaultButton text="Save Routine" callback={handleSaveRoutine} />
                         </div>
                     </section>
                 </div>

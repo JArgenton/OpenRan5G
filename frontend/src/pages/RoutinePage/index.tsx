@@ -9,8 +9,8 @@ export default function RoutinePage(){
         <>
             <DefaultHeader title="Routine" />
             <div style={{ display: "flex", justifyContent: "center", gap: "2rem", marginTop: "2rem" }}>
-                <MenuButton text="Add new routine" path="/addr" />
-                <MenuButton text="Get saved routines" path="/saved" />
+                <MenuButton text="Add new routine" path="/routine/add" />
+                <MenuButton text="Get saved routines" path="/routine/saved" />
             </div>
         </>
     )

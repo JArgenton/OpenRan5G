@@ -7,25 +7,22 @@ class Routine:
     routine_table = RotinasDAO()
     R2T = R2T_DAO()
     last_routine_id : int = -1
-    def __init__(self, name: str):
-        self.name = name
-        self._test: list = []
-
-    @property
-    def routine(self):
-        return self._test
-
+    def __init__(self):
+        ...
     @staticmethod
-    def create_routine_tests(rotina:'Routine', routine_dict : dict, formatted_tests_list: list[dict]): 
+    def create_routine_tests(routine_dict : dict, formatted_tests_list: list[dict]): 
 
         print(f"\nIniciando criação rotina ")
 
         data = {
-            "NAME"      :rotina.name,
-            "SERVER"    :routine_dict["SERVER"],
-            "TIME"      :routine_dict["TIME"],
-            "ACTIVE"    :routine_dict["ACTIVE"]
+            "NAME"      :routine_dict["routineName"],
+            "SERVER"    :routine_dict["server"],
+            "TIME"      :routine_dict["time"],
+            "ACTIVE"    :True
         }
+
+        Routine.routine_table.deactivate_routine_by_time(data['TIME'])
+                
         if not(Routine.routine_table.insert(data)):
             Routine.last_routine_id = Routine.routine_table.get_latest_id()
             return
@@ -40,7 +37,6 @@ class Routine:
             test_id = Test.get_or_create_test_id(test_data_dict)
 
             if test_id:
-                rotina._test.append(test_id)
                 relationship_data = {
                     "TEST_ID"       : test_id,
                     "ROUTINE_ID"    : Routine.last_routine_id
@@ -50,7 +46,12 @@ class Routine:
 
             Routine.R2T.insert(relationship_data)
 
-        
-            
-        print(f"Concluída a criação de testes e relacionamentos para a rotina '{rotina.name}'.")
-        #print(f"test_ids -> {rotina.routine}")
+    def formatRoutineJson(routine):
+        return{
+            "ROUTINE_ID": routine[0],
+            "SERVER": routine[2],
+            "NAME": routine[1],
+            "TIME": routine[3],
+            "ACTIVE": routine[4]
+        }
+

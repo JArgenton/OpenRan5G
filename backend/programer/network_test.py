@@ -67,13 +67,13 @@ class Test:
 
         # packet-size
         try:
-            obj["PACKET_SIZE"] = int(test.get("packet-size", None))
+            obj["PACKET_SIZE"] = int(test.get("packetSize", None))
         except (TypeError, ValueError):
             obj["PACKET_SIZE"] = None
 
         # package-count (ping)
         try:
-            obj["PACKET_COUNT"] = int(test.get("package-count", None))
+            obj["PACKET_COUNT"] = int(test.get("pingPackets", None))
         except (TypeError, ValueError):
             obj["PACKET_COUNT"] = None
 

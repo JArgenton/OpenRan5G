@@ -8,6 +8,7 @@ import StatisticsPage from "./pages/StatisticsPage";
 import RoutinePage from "./pages/RoutinePage";
 import AddRoutine from "./pages/AddRoutine";
 import ResultsPage from "./pages/ResultsPage";
+import GetRoutines from "./pages/GetRoutines";
 
 
 
@@ -34,10 +35,11 @@ const router = createBrowserRouter([
         path: "/routine",
         element: <RoutinePage />
     },{
-        path: "/addr",
+        path: "/routine/add",
         element: <AddRoutine />
     },{
-        path: "/saved"
+        path: "/routine/saved",
+        element: <GetRoutines />
     },{
         path: "/results",
         element: <ResultsPage />

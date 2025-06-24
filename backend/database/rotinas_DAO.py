@@ -29,6 +29,15 @@ class RotinasDAO(DAO):
         self._cur.execute(sql)
         result = self._cur.fetchone()
         return result[0] if result else None  
+    
+    def deactivate_routine_by_time(self, time):
+        sql = f"UPDATE {self.table_name} SET ACTIVE = 0 WHERE TIME = ?"
+        self._cur.execute(sql, (time,))
+
+    def activate_routine(self, r_id, activate):
+        sql = f"UPDATE {self.table_name} SET ACTIVE = ? WHERE ROUTINE_ID = ?"
+        self._cur.execute(sql, (activate, r_id))
+
 
 if __name__ == '__main__':
     rotine = RotinasDAO()

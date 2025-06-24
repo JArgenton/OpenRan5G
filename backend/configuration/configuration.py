@@ -31,20 +31,20 @@ class Configuration_:
         
         if(packet_count == -1):
             config = {
-                "packet-size":packet_size ,
+                "packetSize":packet_size ,
                 "duration": duration,
                 "protocol": protocol.upper()      
             }
         elif protocol == "none":
             config = {
-                "package-count": packet_count    
+                "pingPackets": packet_count    
             }
         else:
             config = {
-                "packet-size":packet_size,
+                "packetSize":packet_size,
                 "duration": duration,
                 "protocol": protocol.upper(),
-                "package-count": packet_count       
+                "pingPackets": packet_count       
             }
 
         output_file = self.parameters_path
