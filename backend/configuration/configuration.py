@@ -14,7 +14,6 @@ class Configuration_:
         self.ping_index = None
         self.iperf_index = None
         self.std_test_file = None
-        self.routines_path = None
 
     def get_formated_date(self):
         return datetime.now().strftime("%Y-%m-%d %H:%M:%S")  
@@ -28,7 +27,7 @@ class Configuration_:
     
     #===============================================================================#
     
-    def set_round_time(hour, minute):
+    def set_round_time(self, hour, minute):
         rounded = ((minute + 14) // 15) * 15
 
         if rounded == 60:
@@ -41,7 +40,7 @@ class Configuration_:
 
     #===============================================================================#
 
-    def get_HH_MM():
+    def get_HH_MM(self):
         agora = datetime.now()
         return agora.hour, agora.minute
 
@@ -98,8 +97,7 @@ class Configuration_:
             data = Configuration_.loadFromJson()
 
             instance = Configuration_._instance
-            instance.parameters_path = data["configuration"]["tests"]["routines-path"]
-            instance.routines_path = data["configuration"]["tests"]["parameters-path"]
+            instance.parameters_path = data["configuration"]["tests"]["parameters-path"]
             instance.output_file= data["configuration"]["tests"]["output-file"]
             instance.ping_index = data["configuration"]["tests"]["ping-index"]
             instance.iperf_index = data["configuration"]["tests"]["iperf-index"]

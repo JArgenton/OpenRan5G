@@ -17,12 +17,14 @@ export default function TestResultPage() {
         console.log("teste")
         if (!res.ok) throw new Error("Erro ao buscar resultados.");
         const data = await res.json();
+        console.log(data.results)
         setResults(data.results || []);
       } catch (error) {
         console.error(error);
       } finally {
         setLoading(false);
       }
+      
     };
 
     if (testId && routineId) {

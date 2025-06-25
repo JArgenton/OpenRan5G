@@ -58,16 +58,18 @@ class Routine:
         }
     @staticmethod
     def getRoutineID(routine_name):
-        return Routine.routine_table.fetch_where(f"WHERE NAME = '{routine_name}'")
+        return Routine.routine_table.fetch_where(f"WHERE NAME = '{routine_name}'")[0][0]
     @staticmethod
     def activate_routine(r_id, activate):
         sql = f"UPDATE {Routine.routine_table.table_name} SET ACTIVE = ? WHERE ROUTINE_ID = ?"
         Routine.routine_table._cur.execute(sql, (activate, r_id))
+        Routine.routine_table._conn.commit()
 
     @staticmethod
     def deactivate_routine_by_time(time):
         sql = f"UPDATE {Routine.routine_table.table_name} SET ACTIVE = 0 WHERE TIME = ?"
         Routine.routine_table._cur.execute(sql, (time,))
+        Routine.routine_table._conn.commit()
         
     
     @staticmethod
@@ -102,9 +104,9 @@ class Routine:
         
 
     @staticmethod
-    def getRoutineTestRExecutoresults(r_id, t_id):
+    def getRoutineTestResults(r_id, t_id):
         sql = f"""
-            SELECT 
+            SELECT DISTINCT
                 res.RESULT_ID,
                 res.ROUTINE_ID,
                 t.TEST_ID,

@@ -59,7 +59,7 @@ class Executor:
     
     def plotGraphicByRoutine(self, server: str, routineName: str, yParam: str):
         self.plotter.getValuesByRoutine(server, routineName, yParam)
-        return self.plotter.generateGraphic("", yParam)
+        return self.plotter.generateGraphic("", yParam, "", 1)
 
     """
     Retorno resultados
@@ -84,17 +84,17 @@ class Executor:
             return {"tests": []}
         for test in tests:
             formated_tests.append(Test.format_tests_json(test)) #TEST_ID, PROTOCOL, DURATION_SECONDS, PACKET_SIZE, PACKET_COUNT
-            print(formated_tests)
+        print(formated_tests)
         return {"tests": formated_tests}
     
     def getRoutineTestResults(self, r_id: int, t_id: int):
         results = Routine.getRoutineTestResults(r_id, t_id)
+        print(results)
         fromated_results = []
         if results is None: 
             return {"results": []}
         for result in results:
             fromated_results.append(Result.format_result_json(result))
-            print(fromated_results)
         return {"results": fromated_results}
         
     def activateRoutine(self, r_id, active, time):
@@ -106,8 +106,9 @@ class Executor:
         formated_tests = []
         time = rtParams["params"]["time"]
         h,m = map(int, time.split(":"))
-        hour, minutes = Configuration_.set_round_time(h,m)
-        rtParams["params"]["time"] = f'{hour}:{minutes}'
+        hour, minutes = self.configuration.set_round_time(h,m)
+        self.agendar_execucao_para(hour, minutes)
+        rtParams["params"]["time"] = f'{hour:02d}:{minutes:02d}'
         for test in rtParams["tests"]:
             formated_tests.append(Test.format_save_test(test))
         Routine.create_routine_tests(rtParams["params"], formated_tests)
@@ -146,25 +147,37 @@ class Executor:
         #print(results)
         return {"results": results}
     
-    def agendar_execucao_para(hora: int, minuto: int):
-        caminho_script = os.path.abspath(__file__)
+    def agendar_execucao_para(self, hora: int, minuto: int):
+        print("Agendando execução...")
         
+        # Caminho para a raiz do projeto (ajuste se necessário)
+        raiz_projeto = "/home/pedro/Documents/OpenRAM/OpenRan5G"
+
+        # Corrige horário para executar 1 minuto antes
         horario = datetime(2024, 1, 1, hora, minuto) - timedelta(minutes=1)
         hora_agendada = horario.hour
         minuto_agendado = horario.minute
 
-        cron_linha = f"{minuto_agendado} {hora_agendada} * * * /usr/bin/python3 {caminho_script} # agendado_auto"
-        crontab_atual = os.popen(f"crontab -l 2>/dev/null").read()
+        # Linha de agendamento com python -m e cd para o diretório do projeto
+        cron_linha = (
+            f"{minuto_agendado} {hora_agendada} * * * cd {raiz_projeto} && "
+            f"/usr/bin/python3 -m backend.Executor # agendado_auto"
+        )
+
+        # Lê a crontab atual
+        crontab_atual = os.popen("crontab -l 2>/dev/null").read()
 
         if cron_linha in crontab_atual:
             print("Execução já agendada.")
             return
 
+        # Adiciona nova linha
         nova_crontab = crontab_atual + f"\n{cron_linha}\n"
         with os.popen("crontab -", "w") as cron:
             cron.write(nova_crontab)
 
-        print(f"Script agendado para {hora_agendada:02d}:{minuto_agendado:02d} diariamente.")
+        print(f"Script agendado para {hora_agendada:02d}:{minuto_agendado:02d} diariamente com 'python -m'.")
+
 
 
 
@@ -180,33 +193,44 @@ if __name__ == '__main__':
 
     executor.clean_tests()
 
-    query = f"""SELECT * FROM {tabela_rotinas.table_name} WHERE TIME = '{time}'"""
-    rotina_resultado = tabela_rotinas.fetch_where(query)
+    where = f"""WHERE TIME = '{time}'"""
+    rotina_resultado = tabela_rotinas.fetch_where(where)
+    print(rotina_resultado)
 
     if not rotina_resultado:
         print("Nenhuma rotina encontrada para o horário atual.")
         exit(0)
+    routine_id = None
+    for routine in rotina_resultado:
+        
+        if bool(int(routine[4])):
+            routine_id = routine[0]
+            server = routine[2]
 
-    rotina_info = rotina_resultado[0]
-    routine_id = rotina_info['ROUTINE_ID']
-    server = rotina_info['SERVER']
+    
+    if routine_id is None:
+        print("Nenhum teste encontrado no horario atual")
+        exit(0)
 
     print(f"Executando rotina {routine_id} no servidor {server}")
 
     # Busca testes relacionados
     query_rel = f"""SELECT TEST_ID FROM {tabela_r2t.table_name} WHERE ROUTINE_ID = {routine_id}"""
-    relacionamentos = tabela_r2t.fetch_where(query_rel)
+    tabela_r2t._cur.execute(query_rel)
+    relacionamentos = tabela_r2t._cur.fetchall()
+    print(relacionamentos)
 
     if not relacionamentos:
         print(f"Nenhum teste relacionado à rotina {routine_id}")
         exit(0)
 
     for rel in relacionamentos:
-        test_id = rel["TEST_ID"]
+        test_id = rel[0]
 
         # Busca o teste na tabela de testes
-        query_test = f"""SELECT * FROM {tabela_testes.table_name} WHERE TEST_ID = {test_id}"""
-        teste_data = tabela_testes.fetch_where(query_test)
+        where = f"""WHERE TEST_ID = {test_id}"""
+        teste_data = tabela_testes.fetch_where(where)
+        print(teste_data)
 
         if not teste_data:
             print(f"⚠️  Teste {test_id} não encontrado.")
@@ -214,11 +238,11 @@ if __name__ == '__main__':
 
         teste = teste_data[0]
 
-        packet_size = int(teste.get("PACKET_SIZE", 64))
-        duration = int(float(teste.get("DURATION_SECONDS", 10)))
-        protocol = str(teste.get("PROTOCOL", "none"))
-        package_count = int(teste.get("PACKET_COUNT", -1))
+        packet_size = int(teste[3])
+        duration = int(teste[2])
+        protocol = str(teste[1])
+        package_count = int(teste[4])
 
         executor.insert_tests(packet_size, duration, protocol, ntests=1, package_count=package_count)
 
-        executor.run_tests(server, routine_id)
+    executor.run_tests(server, routine_id)

@@ -16,6 +16,7 @@ class ResultadosDAO(DAO):
         sql = f"SELECT {sl} FROM resultados JOIN testes_de_rede USING(TEST_ID)"
         if where != "":
             sql += f' {where}'
+        print(sql)
         self._cur.execute(sql)
         return self._cur.fetchall()
 

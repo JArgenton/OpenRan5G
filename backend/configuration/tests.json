@@ -1,31 +1,7 @@
 {
     "tests": [
         {
-            "packetSize": 64,
-            "duration": 5,
-            "protocol": "UDP",
-            "pingPackets": 0
-        },
-        {
             "packetSize": 128,
-            "duration": 5,
-            "protocol": "UDP",
-            "pingPackets": 0
-        },
-        {
-            "packetSize": 256,
-            "duration": 5,
-            "protocol": "UDP",
-            "pingPackets": 0
-        },
-        {
-            "packetSize": 512,
-            "duration": 5,
-            "protocol": "UDP",
-            "pingPackets": 0
-        },
-        {
-            "packetSize": 1024,
             "duration": 5,
             "protocol": "UDP",
             "pingPackets": 0
