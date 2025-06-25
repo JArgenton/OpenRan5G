@@ -1,98 +1,80 @@
 import json
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # type: ignore
+from ..programer.results import Result
+from datetime import datetime
+import os
+from ..programer.routine import Routine
 
 class Plotter:
     def __init__(self):
-        self.x_label = ""
-        self.y_label = ""
-        self.color = "blue"
-        self.line_type = "-"
-        self.x_path = ""
-        self.y_path = ""
-
-    def _get_nested_value(self, data, path):
-        if not path:
-            return None
-        keys = path.split('.')
-        current = data
-        for key in keys:
-            if isinstance(current, dict) and key in current:
-                current = current[key]
-            else:
-                return None
-        return current
-
-    def get_plotting_data(self, data_file='data.json'):
-        x_data = []
-        y_data = []
-        with open(data_file, 'r') as f:
-            data = json.load(f)
-        tests = data.get('tests', [])
-        for test in tests:
-            x_val = self._get_nested_value(test, self.x_path)
-            y_val = self._get_nested_value(test, self.y_path)
-            if x_val is not None and y_val is not None:
-                x_data.append(x_val)
-                y_data.append(y_val)
-        sorted_pairs = sorted(zip(x_data, y_data), key=lambda pair: pair[0])
-        x_sorted = [x for x, y in sorted_pairs]
-        y_sorted = [y for x, y in sorted_pairs]
-        return x_sorted, y_sorted
-
-    def create_graph(self, x_data, y_data):
-        plt.figure()
-        plt.plot(x_data, y_data, color=self.color, linestyle=self.line_type)
-        plt.xlabel(self.x_label)
-        plt.ylabel(self.y_label)
-        plt.title(f"{self.y_label} vs {self.x_label}")
-        plt.grid(True)
-
-    def plot_graph(self):
-        plt.show()
-
-    def save_graph(self, filename):
-        plt.savefig(filename)
-        plt.close()
-
-    def save_plotting_config(self, config_file):
-        config = {
-            "x_path": self.x_path,
-            "y_path": self.y_path,
-            "x_label": self.x_label,
-            "y_label": self.y_label,
-            "color": self.color,
-            "line_type": self.line_type
-        }
-        with open(config_file, 'w') as f:
-            json.dump(config, f, indent=4)
-
-    def load_graph(self, config_file):
-        with open(config_file, 'r') as f:
-            config = json.load(f)
-        self.x_path = config.get('x_path', '')
-        self.y_path = config.get('y_path', '')
-        self.x_label = config.get('x_label', '')
-        self.y_label = config.get('y_label', '')
-        self.color = config.get('color', 'blue')
-        self.line_type = config.get('line_type', '-')
+        self.xParam = []
+        self.yParam = []
 
 
-if __name__ == '__main__':
-    plotter = Plotter()
-    data_path = '/home/argenton/Documentos/OpenRan5g/OpenRan5G/backend/results/07-05_17-31'
+    def getValuesByTime(self, server, xParam: str, yParam: str, date: list[str]):
+        self.xParam = []
+        self.yParam = []
+        where = f"WHERE SERVER = '{server}' AND TIMESTAMP_RESULT BETWEEN '{date[0]}' AND '{date[1]}'"
+        select = f'{xParam}, {yParam}'
+        
+        data = Result.database.get_results_params(where, select)
+        print(data)
+        
+        for dt in data:
+                if dt[0] is not None and dt[1] is not None:
+                    if dt[0] in self.xParam:
+                        index = self.xParam.index(dt[0])
+                        self.yParam[index][0] += dt[1]
+                        self.yParam[index][1] += 1
+                    else:
+                        self.xParam.append(dt[0])
+                        self.yParam.append([dt[1], 1])
+
+                        
+        for i in range(0, len(self.yParam)):
+            y = self.yParam[i]
+            self.yParam[i] = y[0]/y[1]
+
+    def getValuesByRoutine(self, server: str, routineName: str, yParam: str):
+        self.xParam = []
+        self.yParam = []
+        r_id = Routine.getRoutineID(routineName)
+        where = f"WHERE ROUTINE_ID = '{r_id}'"
+        select = f"{yParam}"
+        data = Result.database.get_results_params(where, select)
+        counter = 0
+        for dt in data:
+            self.xParam.append(counter)
+            counter += 1
+            self.yParam.append(dt[0])
     
-    # Lista de configurações para testar
-    configs = [
-        ('backend/plotting/JitterXbps.json', 'throughput_vs_Jitter.png'),
-        ('backend/plotting/pkg_sizeXavg_lat.json', 'Latência_vs_Packet_Size.png'),
-        ('backend/plotting/pkg_sizeXJitter.json', 'Jitter vs Packet Size.png'),
-        ('backend/plotting/pkg_sizeXbps.json', 'lhroughput vs Packet Size.png'),
-        ('backend/plotting/pkg_sizeXLoss.json', 'Packet Loss vs Packet Size.png')
-    ]
+    def generateGraphic(self, xLabel="X", yLabel="Y", title="Gráfico") -> str | None:
+        if not self.xParam or not self.yParam:
+            print("⚠️ Dados insuficientes para gerar gráfico.")
+            return None
 
-    for config_file, output_file in configs:
-        plotter.load_graph(config_file)
-        x_data, y_data = plotter.get_plotting_data(data_path)
-        plotter.create_graph(x_data, y_data)
-        plotter.save_graph(output_file)
-        print(f"Gráfico salvo como: {output_file}")
+        # Garante que a pasta 'plots/' existe
+        os.makedirs("plots", exist_ok=True)
+
+        # Gera nome único para o arquivo
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        path = "plots/"
+        filename = f"{path}grafico_{timestamp}.png"
+
+        # Gera o gráfico
+        plt.figure(figsize=(10, 6))
+        plt.plot(self.xParam, self.yParam, marker='o', linestyle='-', color='blue')
+        plt.xlabel(xLabel)
+        plt.ylabel(yLabel)
+        plt.title(title)
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(filename)
+        #plt.show()
+        plt.close()
+        return filename
+    
+
+    
+
+    

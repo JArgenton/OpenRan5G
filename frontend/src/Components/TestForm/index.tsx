@@ -25,15 +25,10 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
   const [ntests, setNtests] = useState<string>("");
   const [udp, setUdp] = useState<boolean>(false);
   const [tcp, setTcp] = useState<boolean>(false);
-  const [deflt, setDefault] = useState<boolean>(false);
   const [packetSize, setPacketSize] = useState<string>("")
   const [PingPackets, setPingPackets] = useState<string>("")
 
   const [error, setError] = useState<string>("");
-
-  const handleDefaultButton = (_: string, ativo: boolean) => {
-    setDefault(ativo);  
-  };
 
   const handleTypeSelector = (label: string, ativo: boolean) => {
     if (label === "TCP" || label === "UDP") {
@@ -53,7 +48,7 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
       return false;
     }
 
-    if (!deflt && tcp === false && udp === false && ping === false) {
+    if (tcp === false && udp === false && ping === false) {
       setError("Select at least 1 type of test");
       return false;
     }
@@ -87,8 +82,8 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
     if (!validateFields()) return;
 
     let protocol
-    if (tcp) protocol = 'tcp'
-    else if (udp) protocol = 'udp'
+    if (tcp) protocol = 'TCP'
+    else if (udp) protocol = 'UDP'
     else protocol = 'none'
 
     const test: Test = {
@@ -98,7 +93,7 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
       pingPackets: PingPackets === "" ? "0" : PingPackets,
       protocol,
       ping,
-      default: deflt
+      default: false
     }
 
     const tests: Test[] = []
@@ -117,19 +112,13 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
   return (
     <>
       <div className={style.wrapper}>
-        <ToggleButton label="Default Test" onToggle={handleDefaultButton} />
-       
         <div>
-          {!deflt && (
-            <>
-              <h2 className={style.sectionTitle}>Select test types</h2>
-              <div className={style.parameters}>
-                <ToggleButton label="Ping" onToggle={handleTypeSelector} />
-                <ToggleButton label="TCP" onToggle={handleTypeSelector} active={tcp} setActive={setTcp} />
-                <ToggleButton label="UDP" onToggle={handleTypeSelector} active={udp} setActive={setUdp} />
-              </div>
-            </>
-          )}
+          <h2 className={style.sectionTitle}>Select test types</h2>
+          <div className={style.parameters}>
+            <ToggleButton label="Ping" onToggle={handleTypeSelector} />
+            <ToggleButton label="TCP" onToggle={handleTypeSelector} active={tcp} setActive={setTcp} />
+            <ToggleButton label="UDP" onToggle={handleTypeSelector} active={udp} setActive={setUdp} />
+          </div>
 
           <div className={style.inputWrapper}>
             <input
@@ -141,7 +130,7 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
             />
           </div>
 
-          {(tcp || udp) && !deflt && (
+          {(tcp || udp) && (
             <>
               <div className={style.inputWrapper}>
                 <input
@@ -164,7 +153,7 @@ export default function TestForm({ onSubmit, text }: TestFormProps) {
             </>
           )}
 
-          {ping && !deflt && (
+          {ping && (
             <div className={style.inputWrapper}>
               <input
                 type="text"

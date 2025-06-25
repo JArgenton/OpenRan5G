@@ -128,6 +128,10 @@ export default function ResultCard({ test_result }: ResultCardProps) {
             <span className={styles.value}>{latency.parameters.target}</span>
           </div>
           <div className={styles.pair}>
+            <span className={styles.label}>Timestamp:</span>{" "}
+            <span className={styles.value}>{latency.timestamp}</span>
+          </div>
+          <div className={styles.pair}>
             <span className={styles.label}>Mínimo:</span>{" "}
             <span className={styles.value}>{latency.results.min_latency_ms} ms</span>
           </div>

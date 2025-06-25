@@ -1,0 +1,78 @@
+.card {
+  background-color: #1a1a1a;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid #2ecc71;
+  box-shadow: 0 0 12px rgba(46, 204, 113, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 20px rgba(46, 204, 113, 0.35);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00ff88;
+  margin-bottom: 1rem;
+}
+
+.label {
+  font-weight: 500;
+  color: #9ca3af;
+  margin-right: 0.25rem;
+}
+
+.value {
+  color: #f3f4f6;
+}
+
+.pair {
+  margin-bottom: 0.5rem;
+  display: flex;
+  gap: 0.25rem;
+  align-items: baseline;
+}
+
+.buttonGroup {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.cardButton {
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.75rem;
+  border: 1px solid #2ecc71;
+  background-color: transparent;
+  color: #2ecc71;
+  font-weight: bold;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+
+.cardButton:hover {
+  background-color: #2ecc71;
+  color: #1a1a1a;
+  transform: translateY(-1px);
+}
+
+.cardButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.ativa {
+  color: #00ff88;
+}
+
+.inativa {
+  color: #ff5555;
+}

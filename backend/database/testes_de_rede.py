@@ -32,6 +32,7 @@ class TestesDeRedeDAO(DAO):
         return result[0] if result else None  
 
 
+
 if __name__ == '__main__':
     testes_de_rede = TestesDeRedeDAO()
     #testes_de_rede.create_table()

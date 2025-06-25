@@ -1,5 +1,5 @@
 # network_test.py (AJUSTADO)
-from database.testes_de_rede import TestesDeRedeDAO
+from ..database.testes_de_rede import TestesDeRedeDAO
 
 class Test:
     database = TestesDeRedeDAO()
@@ -20,13 +20,78 @@ class Test:
         """
         Insere os dados de um objeto Test no banco de dados e retorna o ID gerado.
         """
-        data = {
-            "PROTOCOL" : test_obj["PROTOCOL"],
-            "DURATION_SECONDS": test_obj["DURATION_SECONDS"],
-            "PACKET_SIZE": test_obj["PACKET_SIZE"],
-            "PACKET_COUNT": test_obj["PACKET_COUNT"]
-        }
-        Test.database.insert(data)
+        Test.database.insert(test_obj)
         test_id = Test.database._cur.lastrowid
         print(f"Test data sent to database for insertion. Test ID: {test_id}")
         return test_id
+    @staticmethod
+    def get_or_create_test_id(dados_teste: dict) -> int:
+        conditions = []
+        values = []
+
+        for field in ["PROTOCOL", "DURATION_SECONDS", "PACKET_SIZE", "PACKET_COUNT"]:
+            val = dados_teste.get(field)
+            if val is None:
+                conditions.append(f"{field} IS NULL")
+            else:
+                conditions.append(f"{field} = ?")
+                values.append(val)
+
+        sql = f"""
+            SELECT TEST_ID FROM testes_de_rede
+            WHERE {" AND ".join(conditions)}
+        """
+
+        Test.database._cur.execute(sql, values)
+        result = Test.database._cur.fetchone()
+
+        if result:
+            return result[0]
+
+        # Inserir se não encontrou
+        Test.database.insert(data=dados_teste)
+        return Test.database.get_latest_id()
+    
+    @staticmethod
+    def format_save_test(test: dict) -> dict:
+        obj = {}
+
+        # Campos diretos (protocolo pode não estar presente)
+        obj["PROTOCOL"] = test.get("protocol", None)
+
+        # duration
+        try:
+            obj["DURATION_SECONDS"] = float(test.get("duration", None))
+        except (TypeError, ValueError):
+            obj["DURATION_SECONDS"] = None
+
+        # packet-size
+        try:
+            obj["PACKET_SIZE"] = int(test.get("packetSize", None))
+        except (TypeError, ValueError):
+            obj["PACKET_SIZE"] = None
+
+        # package-count (ping)
+        try:
+            obj["PACKET_COUNT"] = int(test.get("pingPackets", None))
+        except (TypeError, ValueError):
+            obj["PACKET_COUNT"] = None
+
+        return obj
+    
+    @staticmethod
+    def format_tests_json(test: tuple):
+        return {
+            "TEST_ID": test[0],
+            "PROTOCOL": test[1],
+            "DURATION_SECONDS": test[2],
+            "PACKET_SIZE": test[3],
+            "PACKET_COUNT": test[4]
+        }
+
+    @staticmethod
+    def get_tests_by_RID(r_id: int):
+        sql = f"SELECT TEST_ID, PROTOCOL, DURATION_SECONDS, PACKET_SIZE, PACKET_COUNT FROM {Test.database.table_name} JOIN relacionamentos_R2T USING(TEST_ID) WHERE ROUTINE_ID = ?"
+        Test.database._cur.execute(sql, (r_id,))
+        return Test.database._cur.fetchall()
+    #TEST_ID, PROTOCOL, DURATION_SECONDS, PACKET_SIZE, PACKET_COUNT

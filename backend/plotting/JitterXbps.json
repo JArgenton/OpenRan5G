@@ -1,8 +1,0 @@
-{
-    "x_path": "iperf_data.results.Jitter",
-    "y_path": "iperf_data.results.bits_per_second",
-    "x_label": "Jitter (ms)",
-    "y_label": "Taxa de Transferência (bps)",
-    "color": "#1f77b4",
-    "line_type": "-"
-}

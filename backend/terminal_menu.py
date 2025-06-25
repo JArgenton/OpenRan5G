@@ -13,7 +13,7 @@ class Menu:
             print("="*40)
             print("1 - Rodar testes")
             print("2 - Rotinas (em breve)")
-            print("3 - Histórico de testes (em breve)")
+            print("3 - Histórico de testes")
             print("4 - Voltar")
             print("-"*40)
 
@@ -58,7 +58,7 @@ class Menu:
                 input("Comando inválido. Pressione Enter para continuar.")
 
     def data_log(self):
-        data = self.executor.load_data()
+        data = self.executor.load_results()
         return data
 
     def build_tests(self):

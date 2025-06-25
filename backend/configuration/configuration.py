@@ -9,7 +9,6 @@ class Configuration_:
     _instance = None 
 
     def __init__(self):
-        self.date = None
         self.parameters_path = None
         self.output_file = None
         self.ping_index = None
@@ -18,12 +17,8 @@ class Configuration_:
         self.routines_path = None
 
     def get_formated_date(self):
-        if self.date == None:
-            current_time = datetime.now()
-            formatted_date = current_time.strftime("%d-%m")  
-            formatted_time = current_time.strftime("%H-%M") 
-            self.date = (f"{formatted_date}_{formatted_time}")
-        return self.date
+        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")  
+        
     #===============================================================================#
     
     def clean_tests(self):
@@ -60,20 +55,20 @@ class Configuration_:
         
         if(packet_count == -1):
             config = {
-                "packet-size":packet_size ,
+                "packetSize":packet_size ,
                 "duration": duration,
                 "protocol": protocol.upper()      
             }
         elif protocol == "none":
             config = {
-                "package-count": packet_count    
+                "pingPackets": packet_count    
             }
         else:
             config = {
-                "packet-size":packet_size,
+                "packetSize":packet_size,
                 "duration": duration,
                 "protocol": protocol.upper(),
-                "package-count": packet_count       
+                "pingPackets": packet_count       
             }
 
         output_file = self.parameters_path

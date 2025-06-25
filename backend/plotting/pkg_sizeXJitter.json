@@ -1,8 +1,0 @@
-{
-    "x_path": "iperf_data.parameters.packet_size",
-    "y_path": "iperf_data.results.Jitter",
-    "x_label": "Tamanho do Pacote (bytes)",
-    "y_label": "Jitter (ms)",
-    "color": "#d62728",
-    "line_type": "--"
-}

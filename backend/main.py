@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 from .Executor import Executor
 from typing import List
 from fastapi.responses import JSONResponse # type: ignore
+from fastapi.responses import FileResponse #type: ignore
+import os
+from fastapi import Path # type: ignore
 
 app = FastAPI()
 
@@ -37,10 +40,46 @@ def run_tests(tests: List[dict]):
     
 @app.get("/api/log")
 def get_data_log():
-    data = executor.load_data()
+    data = executor.load_results()
     #print(data)
     return data
 
-    
-            
-            
+@app.post("/api/plotting")
+def plotGraphic(pltConfig: dict):
+    if pltConfig.get("startDate", 0):
+        filename = executor.plotGraphicByTime(pltConfig["server"].strip(), pltConfig["xParam"], pltConfig["yParam"], [pltConfig["startDate"], pltConfig["finalDate"]])
+    if pltConfig.get("routineName", 0):
+        filename = executor.plotGraphicByRoutine(pltConfig["server"], pltConfig["routineName"], pltConfig["yParam"])
+
+    if not filename or not os.path.exists(filename):
+        return {"error": "Gráfico não gerado"}
+
+    return FileResponse(
+        path=filename,
+        media_type="image/png",
+        filename=os.path.basename(filename)
+    )
+
+@app.post("/api/routine")
+def insertRoutine(rtParams: dict):
+    print(rtParams)
+    executor.createRoutine(rtParams)
+
+@app.get("/api/routine/saved")
+def getSavedRoutines():
+    return executor.getRoutines()
+
+@app.post("/api/routine/activate")
+def toggleActivate(params: dict):
+    executor.activateRoutine(params["r_id"], params["active"], params["time"])  
+
+@app.get("/api/routine/{routine_id}/tests")
+def get_routine_tests(routine_id: str):
+    return executor.getRoutineTests(int(routine_id))  
+
+@app.get("/api/results/{testId}/{routineId}")
+def get_routine_tests_results(
+    testId: int = Path(..., description="ID do teste"),
+    routineId: int = Path(..., description="ID da rotina")
+):
+    return executor.getRoutineTestResults(routineId, testId)
