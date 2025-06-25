@@ -12,7 +12,7 @@ from .plotting.plotGraphic import Plotter
 from .database.relacionamentos_R2T import _Relacionamento_R2T as R2T
 import getpass
 from datetime import datetime, timedelta
-from .database import rotinas_DAO, testes_de_rede
+from .database.rotinas_DAO import RotinasDAO
 
 #export interface Test {
   #ip: string,
@@ -171,22 +171,54 @@ class Executor:
 if __name__ == '__main__':
     executor = Executor()
     tabela_rotinas = RotinasDAO()
+    tabela_r2t = R2T()
+    tabela_testes = TestesDeRedeDAO()
 
     hour, minute = executor.configuration.get_HH_MM()
     hour, minute = executor.configuration.set_round_time(hour, minute)
-
     time = f"{hour:02d}:{minute:02d}"
 
-    query = f"""SELECT ROUTINE_ID FROM {tabela_rotinas.table_name} WHERE TIME = '{time}'"""
-
-
-    tabela_rotinas.fetch_where(query)
     executor.clean_tests()
-    executor.insert_tests()
 
+    query = f"""SELECT * FROM {tabela_rotinas.table_name} WHERE TIME = '{time}'"""
+    rotina_resultado = tabela_rotinas.fetch_where(query)
 
+    if not rotina_resultado:
+        print("Nenhuma rotina encontrada para o horário atual.")
+        exit(0)
 
+    rotina_info = rotina_resultado[0]
+    routine_id = rotina_info['ROUTINE_ID']
+    server = rotina_info['SERVER']
 
+    print(f"Executando rotina {routine_id} no servidor {server}")
 
+    # Busca testes relacionados
+    query_rel = f"""SELECT TEST_ID FROM {tabela_r2t.table_name} WHERE ROUTINE_ID = {routine_id}"""
+    relacionamentos = tabela_r2t.fetch_where(query_rel)
 
-#(ip, duration, packet_size, packet_count)
+    if not relacionamentos:
+        print(f"Nenhum teste relacionado à rotina {routine_id}")
+        exit(0)
+
+    for rel in relacionamentos:
+        test_id = rel["TEST_ID"]
+
+        # Busca o teste na tabela de testes
+        query_test = f"""SELECT * FROM {tabela_testes.table_name} WHERE TEST_ID = {test_id}"""
+        teste_data = tabela_testes.fetch_where(query_test)
+
+        if not teste_data:
+            print(f"⚠️  Teste {test_id} não encontrado.")
+            continue
+
+        teste = teste_data[0]
+
+        packet_size = int(teste.get("PACKET_SIZE", 64))
+        duration = int(float(teste.get("DURATION_SECONDS", 10)))
+        protocol = str(teste.get("PROTOCOL", "none"))
+        package_count = int(teste.get("PACKET_COUNT", -1))
+
+        executor.insert_tests(packet_size, duration, protocol, ntests=1, package_count=package_count)
+
+        executor.run_tests(server, routine_id)
