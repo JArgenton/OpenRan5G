@@ -1,7 +1,10 @@
 from database.rotinas_DAO import RotinasDAO
 from database.relacionamentos_R2T import _Relacionamento_R2T as R2T_DAO
 from network_test import Test
-
+import os
+import getpass
+from datetime import datetime, timedelta
+from ..Executor import Executor
 
 class Routine:
     routine_table = RotinasDAO()
@@ -47,3 +50,36 @@ class Routine:
             
         print(f"Concluída a criação de testes e relacionamentos para a rotina '{rotina.name}'.")
         print(f"test_ids -> {rotina.routine}")
+        try:
+            hora_str, minuto_str = routine_dict["TIME"].split(":")
+            Routine.agendar_execucao_para(int(hora_str), int(minuto_str))
+        except Exception as e:
+            print(f"Erro ao agendar execução: {e}")
+
+    @staticmethod
+    def agendar_execucao_para(hora: int, minuto: int):
+        caminho_script = os.path.abspath(__file__)
+        
+        horario = datetime(2024, 1, 1, hora, minuto) - timedelta(minutes=1)
+        hora_agendada = horario.hour
+        minuto_agendado = horario.minute
+
+        cron_linha = f"{minuto_agendado} {hora_agendada} * * * /usr/bin/python3 {caminho_script} # agendado_auto"
+        crontab_atual = os.popen(f"crontab -l 2>/dev/null").read()
+
+        if cron_linha in crontab_atual:
+            print("Execução já agendada.")
+            return
+
+        nova_crontab = crontab_atual + f"\n{cron_linha}\n"
+        with os.popen("crontab -", "w") as cron:
+            cron.write(nova_crontab)
+
+        print(f"Script agendado para {hora_agendada:02d}:{minuto_agendado:02d} diariamente.")
+
+
+if __name__ == '__main__':
+    #verificar qual rotina foi agendada e executar o terminal
+    executor = Executor()
+    executor.clean_tests()
+    

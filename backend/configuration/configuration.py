@@ -15,6 +15,7 @@ class Configuration_:
         self.ping_index = None
         self.iperf_index = None
         self.std_test_file = None
+        self.routines_path = None
 
     def get_formated_date(self):
         if self.date == None:
@@ -23,12 +24,35 @@ class Configuration_:
             formatted_time = current_time.strftime("%H-%M") 
             self.date = (f"{formatted_date}_{formatted_time}")
         return self.date
-
+    #===============================================================================#
+    
     def clean_tests(self):
         target = self.parameters_path
         with open(target, 'w') as file:
             json.dump({"tests": []}, file, indent=4)  
     
+    #===============================================================================#
+    
+    def set_round_time(hour, minute):
+        rounded = ((minute + 14) // 15) * 15
+
+        if rounded == 60:
+            minute = 0
+            hour = (hour + 1) % 24 
+        else:
+            minute = rounded
+
+        return hour, minute
+
+    #===============================================================================#
+
+    def clean_routine(self):
+        target = self.parameters_path
+        with open(target, 'w') as file:
+            json.dump({"tests": []}, file, indent=4)  
+    
+    #===============================================================================#
+
     def make_config(self, packet_size, duration, protocol = "none", packet_count = -1):
         if packet_count == -1 and protocol == "":
             print('Entrada de teste inválida')
@@ -74,7 +98,8 @@ class Configuration_:
             data = Configuration_.loadFromJson()
 
             instance = Configuration_._instance
-            instance.parameters_path = data["configuration"]["tests"]["parameters-path"]
+            instance.parameters_path = data["configuration"]["tests"]["routines-path"]
+            instance.routines_path = data["configuration"]["tests"]["parameters-path"]
             instance.output_file= data["configuration"]["tests"]["output-file"]
             instance.ping_index = data["configuration"]["tests"]["ping-index"]
             instance.iperf_index = data["configuration"]["tests"]["iperf-index"]
