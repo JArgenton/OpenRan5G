@@ -43,6 +43,9 @@ class Executor:
     
     def clean_tests(self):
         self.configuration.clean_tests()
+
+    def clean_routine(self):
+        self.configuration.clean_routine()
        
     def run_server(self):
         Iperf.run_iperf3_server()
