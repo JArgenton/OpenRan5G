@@ -10,6 +10,9 @@ from .programer.network_test import Test
 from .programer.results import Result
 from .plotting.plotGraphic import Plotter
 from .database.relacionamentos_R2T import _Relacionamento_R2T as R2T
+import getpass
+from datetime import datetime, timedelta
+from .database import rotinas_DAO, testes_de_rede
 
 #export interface Test {
   #ip: string,
@@ -145,34 +148,45 @@ class Executor:
             #print(self.databaset.fetch_all())
         #print(results)
         return {"results": results}
-   
+    
+    def agendar_execucao_para(hora: int, minuto: int):
+        caminho_script = os.path.abspath(__file__)
+        
+        horario = datetime(2024, 1, 1, hora, minuto) - timedelta(minutes=1)
+        hora_agendada = horario.hour
+        minuto_agendado = horario.minute
 
-if __name__ == "__main__":
+        cron_linha = f"{minuto_agendado} {hora_agendada} * * * /usr/bin/python3 {caminho_script} # agendado_auto"
+        crontab_atual = os.popen(f"crontab -l 2>/dev/null").read()
+
+        if cron_linha in crontab_atual:
+            print("Execução já agendada.")
+            return
+
+        nova_crontab = crontab_atual + f"\n{cron_linha}\n"
+        with os.popen("crontab -", "w") as cron:
+            cron.write(nova_crontab)
+
+        print(f"Script agendado para {hora_agendada:02d}:{minuto_agendado:02d} diariamente.")
+
+
+
+if __name__ == '__main__':
     executor = Executor()
-    routine = Routine("Teste3")
-    routine_params = {
-        "SERVER"    : "192.168.0.21",
-        "TIME"      : "16:30",
-        "ACTIVE"    : 1
-    }
+    tabela_rotinas = RotinasDAO()
 
-    tests = [
-        {
-            "packetSize": 256,
-            "duration": 5,
-            "protocol": "TCP",
-            "pingPackets": 0
-        },
-        {
-            "packetSize": 128,
-            "duration" : 10,
-            "protocol" : "UDP"
-        }
-    ]
-    formated_tests = [executor.format_save_test(tests[0]), executor.format_save_test(tests[1])]
+    hour, minute = executor.configuration.get_HH_MM()
+    hour, minute = executor.configuration.set_round_time(hour, minute)
 
-    routine.create_routine_tests(routine, routine_params, formated_tests)
-    print(Routine.R2T.fetch_all())
+    time = f"{hour:02d}:{minute:02d}"
+
+    query = f"""SELECT ROUTINE_ID FROM {tabela_rotinas.table_name} WHERE TIME = '{time}'"""
+
+
+    tabela_rotinas.fetch_where(query)
+    executor.clean_tests()
+    executor.insert_tests()
+
 
 
 

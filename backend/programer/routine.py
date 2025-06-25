@@ -3,9 +3,6 @@ from ..database.relacionamentos_R2T import _Relacionamento_R2T as R2T_DAO
 from .network_test import Test
 from .results import Result
 
-import getpass
-from datetime import datetime, timedelta
-from .programer import get_path
 
 class Routine:
     routine_table = RotinasDAO()
@@ -146,27 +143,6 @@ class Routine:
             Routine.agendar_execucao_para(int(hora_str), int(minuto_str))
         except Exception as e:
             print(f"Erro ao agendar execução: {e}")
-
-    @staticmethod
-    def agendar_execucao_para(hora: int, minuto: int):
-        caminho_script = get_path()    
-        
-        horario = datetime(2024, 1, 1, hora, minuto) - timedelta(minutes=1)
-        hora_agendada = horario.hour
-        minuto_agendado = horario.minute
-
-        cron_linha = f"{minuto_agendado} {hora_agendada} * * * /usr/bin/python3 {caminho_script} # agendado_auto"
-        crontab_atual = os.popen(f"crontab -l 2>/dev/null").read()
-
-        if cron_linha in crontab_atual:
-            print("Execução já agendada.")
-            return
-
-        nova_crontab = crontab_atual + f"\n{cron_linha}\n"
-        with os.popen("crontab -", "w") as cron:
-            cron.write(nova_crontab)
-
-        print(f"Script agendado para {hora_agendada:02d}:{minuto_agendado:02d} diariamente.")
 
 
     
