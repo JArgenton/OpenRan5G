@@ -79,6 +79,7 @@ class Test:
 
         return obj
     
+    @staticmethod
     def format_tests_json(test: tuple):
         return {
             "TEST_ID": test[0],
@@ -88,4 +89,9 @@ class Test:
             "PACKET_COUNT": test[4]
         }
 
+    @staticmethod
+    def get_tests_by_RID(r_id: int):
+        sql = f"SELECT TEST_ID, PROTOCOL, DURATION_SECONDS, PACKET_SIZE, PACKET_COUNT FROM {Test.database.table_name} JOIN relacionamentos_R2T USING(TEST_ID) WHERE ROUTINE_ID = ?"
+        Test.database._cur.execute(sql, (r_id,))
+        return Test.database._cur.fetchall()
     #TEST_ID, PROTOCOL, DURATION_SECONDS, PACKET_SIZE, PACKET_COUNT

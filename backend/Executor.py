@@ -74,7 +74,7 @@ class Executor:
         return {"routines": formated_routines}
     
     def getRoutineTests(self, r_id: int):
-        tests = Test.database.get_tests_by_RID(r_id)
+        tests = Test.get_tests_by_RID(r_id)
         formated_tests = []
         if tests is None: 
             return {"tests": []}
@@ -95,9 +95,8 @@ class Executor:
         
     def activateRoutine(self, r_id, active, time):
         if(active):
-            Routine.routine_table.deactivate_routine_by_time(time)
-        Routine.routine_table.activate_routine(r_id, active)
-        
+            Routine.deactivate_routine_by_time(time)
+        Routine.activate_routine(r_id, active)
     
     def createRoutine(self, rtParams: dict):
         formated_tests = []

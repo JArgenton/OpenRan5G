@@ -22,7 +22,7 @@ class Routine:
             "ACTIVE"    :True
         }
 
-        Routine.routine_table.deactivate_routine_by_time(data['TIME'])
+        Routine.deactivate_routine_by_time(data['TIME'])
                 
         if not(Routine.routine_table.insert(data)):
             Routine.last_routine_id = Routine.routine_table.get_latest_id()
@@ -55,9 +55,18 @@ class Routine:
             "TIME": routine[3],
             "ACTIVE": routine[4]
         }
-    
+    @staticmethod
     def getRoutineID(routine_name):
         return Routine.routine_table.fetch_where(f"WHERE NAME = '{routine_name}'")
+    @staticmethod
+    def activate_routine(r_id, activate):
+        sql = f"UPDATE {Routine.routine_table.table_name} SET ACTIVE = ? WHERE ROUTINE_ID = ?"
+        Routine.routine_table._cur.execute(sql, (activate, r_id))
+
+    @staticmethod
+    def deactivate_routine_by_time(time):
+        sql = f"UPDATE {Routine.routine_table.table_name} SET ACTIVE = 0 WHERE TIME = ?"
+        Routine.routine_table._cur.execute(sql, (time,))
         
     
     @staticmethod
