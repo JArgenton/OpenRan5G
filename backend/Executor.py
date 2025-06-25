@@ -24,8 +24,6 @@ from .database import rotinas_DAO, testes_de_rede
  # default: boolean
 #}
 
-#OS PROBLEMAS FALTANTES SAO: timestamp apenas em bandwidth e a routine nao foi configurada direito ainda
-
 class Executor:
     def __init__(self):
         self.configuration = Configuration_.getObject()
@@ -106,14 +104,13 @@ class Executor:
     
     def createRoutine(self, rtParams: dict):
         formated_tests = []
+        time = rtParams["params"]["time"]
+        h,m = map(int, time.split(":"))
+        hour, minutes = Configuration_.set_round_time(h,m)
+        rtParams["params"]["time"] = f'{hour}:{minutes}'
         for test in rtParams["tests"]:
             formated_tests.append(Test.format_save_test(test))
         Routine.create_routine_tests(rtParams["params"], formated_tests)
-        print(Routine.R2T.fetch_all())
-        print(Routine.routine_table.fetch_all())
-        print(Test.database.fetch_all())
-        
-        print(Test.database.fetch_all())
 
     def run_tests(self, server, routine_id = -1):    
         with open('backend/configuration/tests.json', 'r') as file:
