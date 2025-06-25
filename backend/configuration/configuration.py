@@ -41,6 +41,11 @@ class Configuration_:
 
     #===============================================================================#
 
+    def get_HH_MM():
+        agora = datetime.now()
+        return agora.hour, agora.minute
+
+    #===============================================================================#
     def clean_routine(self):
         target = self.parameters_path
         with open(target, 'w') as file:

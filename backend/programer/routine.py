@@ -2,10 +2,10 @@ from ..database.rotinas_DAO import RotinasDAO
 from ..database.relacionamentos_R2T import _Relacionamento_R2T as R2T_DAO
 from .network_test import Test
 from .results import Result
-import os
+
 import getpass
 from datetime import datetime, timedelta
-from ..Executor import Executor
+from .programer import get_path
 
 class Routine:
     routine_table = RotinasDAO()
@@ -13,6 +13,7 @@ class Routine:
     last_routine_id : int = -1
     def __init__(self):
         ...
+
     @staticmethod
     def create_routine_tests(routine_dict : dict, formatted_tests_list: list[dict]): 
 
@@ -104,7 +105,7 @@ class Routine:
         
 
     @staticmethod
-    def getRoutineTestResults(r_id, t_id):
+    def getRoutineTestRExecutoresults(r_id, t_id):
         sql = f"""
             SELECT 
                 res.RESULT_ID,
@@ -148,7 +149,7 @@ class Routine:
 
     @staticmethod
     def agendar_execucao_para(hora: int, minuto: int):
-        caminho_script = os.path.abspath(__file__)
+        caminho_script = get_path()    
         
         horario = datetime(2024, 1, 1, hora, minuto) - timedelta(minutes=1)
         hora_agendada = horario.hour
@@ -168,8 +169,4 @@ class Routine:
         print(f"Script agendado para {hora_agendada:02d}:{minuto_agendado:02d} diariamente.")
 
 
-if __name__ == '__main__':
-    #verificar qual rotina foi agendada e executar o terminal
-    executor = Executor()
-    executor.clean_tests()
     
