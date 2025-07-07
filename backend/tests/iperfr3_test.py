@@ -31,8 +31,18 @@ class Iperf(ABC):
     
     @abstractmethod
     def run_iperf3_server():
-        command = ["iperf3", "-s"]
-        subprocess.run(command)
+        return subprocess.Popen(["iperf3", "-s"])
+    
+
+    @abstractmethod
+    def stop_iperf3_server(process):
+        print("🛑 Encerrando servidor iperf3...")
+        process.terminate()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            print("⚠️ Não respondeu, forçando encerramento.")
+            process.kill()
 
     @abstractmethod
     def iperf3_output(data, protocol):

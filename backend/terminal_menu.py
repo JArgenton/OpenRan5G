@@ -24,13 +24,10 @@ class Menu:
                 continue
 
             if choice == 1:
-                ip = self.build_tests()
-                os.system('clear')
-                print("Executando testes...\n")
-                self.executor.run_tests(ip)
+                self.run_tests_interactive()
                 input('\nPressione Enter para continuar...')
             elif choice == 3:
-                print(self.data_log())
+                self.data_log()
                 input('\nPressione Enter para continuar...')
             elif choice == 4:
                 return
@@ -58,43 +55,60 @@ class Menu:
                 input("Comando inválido. Pressione Enter para continuar.")
 
     def data_log(self):
-        data = self.executor.load_results()
-        return data
+        resultado = self.executor.load_results()
+        for i, res in enumerate(resultado['results'], start=1):
+            print(f"\n{'='*10} RESULTADO {i} {'='*10}")
+            print(self.executor.format_result_for_terminal(res))
 
-    def build_tests(self):
+
+    def run_tests_interactive(self):
         os.system('clear')
-        inserir_novo_teste = input("Deseja inserir um novo teste? (S/N) >> ").strip().upper()
-        ip = input("Insira o IP do servidor >> ").strip()
+        print("=" * 40)
+        print("        EXECUTAR TESTES AGORA         ")
+        print("=" * 40)
 
-        if inserir_novo_teste == 'S':
-            self.executor.clean_tests()
+        server = input("Informe o IP ou domínio do servidor:\n>> ").strip()
 
-        while inserir_novo_teste == 'S':
+        try:
+            qtd_testes = int(input("\nQuantos testes diferentes deseja configurar?\n>> "))
+            if qtd_testes <= 0:
+                raise ValueError()
+        except ValueError:
+            input("\n❌ Valor inválido. Pressione Enter para voltar ao menu.")
+            return
+
+        self.executor.clean_tests()
+
+        for i in range(qtd_testes):
             os.system('clear')
-            print("="*40)
-            print("       INSERÇÃO DE NOVO TESTE           ")
-            print("="*40)
-
+            print(f"--- Configuração do Teste {i+1} de {qtd_testes} ---")
             try:
-                packet_size = int(input(">> Tamanho do pacote (bytes): "))
-                duration = int(input(">> Duração do teste (s): "))
-
-                protocol = input(">> Protocolo (TCP/UDP): ").strip().upper()
-                if protocol not in ["TCP", "UDP"]:
+                protocolo = input("Protocolo (TCP/UDP): ").strip().upper()
+                if protocolo not in ["TCP", "UDP"]:
                     raise ValueError("Protocolo inválido! Use TCP ou UDP.")
-                
-                package_count = int(input(">> Nº de pacotes para ping: "))
-                ntests = int(input(">> Nº de repetições desse teste: "))
-            except ValueError:
-                input("\nEntrada inválida. Pressione Enter para tentar novamente.")
-                continue
 
-            self.executor.insert_tests(packet_size, duration, protocol, ntests, package_count)
-            print("\n✔️ Teste inserido com sucesso!\n")
+                duracao = int(input("Duração (em segundos): "))
+                pacote = int(input("Tamanho do pacote (em bytes): "))
+                qtd_ping = int(input("Nº de pacotes para ping: "))
 
-            inserir_novo_teste = input("Deseja inserir outro teste? (S/N) >> ").strip().upper()
+            except ValueError as e:
+                input(f"\n❌ Entrada inválida: {e}. Pressione Enter para tentar novamente.")
+                return
 
-        return ip
+            self.executor.insert_tests(
+                packet_size=pacote,
+                duration=duracao,
+                protocol=protocolo,
+                ntests=1,
+                package_count=qtd_ping
+            )
+
+        os.system('clear')
+        print("✔️ Testes configurados. Executando...\n")
+        resultado = self.executor.run_tests(server)
+        for i, res in enumerate(resultado['results'], start=1):
+            print(f"\n{'='*10} RESULTADO {i} {'='*10}")
+            print(self.executor.format_result_for_terminal(res))
 
 
 if __name__ == "__main__":

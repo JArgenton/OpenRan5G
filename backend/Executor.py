@@ -51,7 +51,10 @@ class Executor:
         self.configuration.clean_routine()
        
     def run_server(self):
-        Iperf.run_iperf3_server()
+        return Iperf.run_iperf3_server()
+
+    def kill_server(self, process):
+        Iperf.stop_iperf3_server(process)
 
     def plotGraphicByTime(self,server: str, xParam: str, yParam: str, date: list[str]):
         self.plotter.getValuesByTime(server, xParam, yParam, date)
@@ -107,11 +110,65 @@ class Executor:
         time = rtParams["params"]["time"]
         h,m = map(int, time.split(":"))
         hour, minutes = self.configuration.set_round_time(h,m)
-        self.agendar_execucao_para(hour, minutes)
+        self.agendar_execucao_cliente(hour, minutes)
         rtParams["params"]["time"] = f'{hour:02d}:{minutes:02d}'
         for test in rtParams["tests"]:
             formated_tests.append(Test.format_save_test(test))
         Routine.create_routine_tests(rtParams["params"], formated_tests)
+
+    def format_result_for_terminal(self, result: dict) -> str:
+        linhas = []
+
+        timestamp = (
+            result.get("latency", {}).get("timestamp") or
+            result.get("bandwidth", {}).get("timestamp") or
+            "Desconhecido"
+        )
+        linhas.append(f"\n🕒 Timestamp: {timestamp}\n")
+
+        # Bandwidth (TCP/UDP)
+        if "bandwidth" in result:
+            bw = result["bandwidth"]
+            protocolo = bw.get("protocol", "").upper()
+            params = bw.get("parameters", {})
+            res = bw.get("results", {})
+
+            linhas.append(f"📶 TESTE DE BANDA ({protocolo})")
+            linhas.append("-" * 40)
+            linhas.append(f"Servidor: {params.get('server', 'N/A')}")
+            linhas.append(f"Duração: {params.get('duration_seconds', 'N/A')}s")
+            linhas.append(f"Tamanho do Pacote: {params.get('packet_size', 'N/A')} bytes")
+
+            bps = res.get("bits_per_second", 0)
+            linhas.append(f"Bits por segundo: {bps / 1e6:.2f} Mbps")
+
+            bytes_transferidos = res.get("bytes_transferred", 0)
+            linhas.append(f"Bytes transferidos: {bytes_transferidos / 1e6:.2f} MB")
+
+            if protocolo == "TCP":
+                linhas.append(f"Retransmissões: {res.get('retransmits', 0)}")
+            elif protocolo == "UDP":
+                linhas.append(f"Pacotes enviados: {res.get('packets', 0)}")
+                linhas.append(f"Perda de pacotes: {res.get('lost_packets', 0)} ({res.get('lost_percent', 0):.1f}%)")
+                linhas.append(f"Jitter: {res.get('Jitter', 0):.2f} ms")
+
+            linhas.append("")  # Espaço após banda
+
+        # Latency (Ping)
+        if "latency" in result:
+            lat = result["latency"]
+            params = lat.get("parameters", {})
+            res = lat.get("results", {})
+
+            linhas.append("🏓 TESTE DE LATÊNCIA (Ping)")
+            linhas.append("-" * 40)
+            linhas.append(f"Alvo: {params.get('target', 'N/A')}")
+            linhas.append(f"Pacotes: {params.get('packet_count', 'N/A')}")
+            linhas.append(f"Min: {res.get('min_latency_ms', 0)} ms | "
+                        f"Média: {res.get('avg_latency_ms', 0)} ms | "
+                        f"Máx: {res.get('max_latency_ms', 0)} ms")
+
+        return "\n".join(linhas)
 
     def run_tests(self, server, routine_id = -1):    
         with open('backend/configuration/tests.json', 'r') as file:
@@ -133,21 +190,48 @@ class Executor:
                 ping = True
                 test_result["latency"] = self.execute_ping(server, test)
 
-            formated_test = Test.format_save_test(test)
-            #print(formated_test)
-            t_id = Test.get_or_create_test_id(formated_test)
-
-            formated_result = Result.format_save_json(test_result, protocol, ping, t_id, server, routine_id)
-            
-            Result.database.insert(formated_result)
+            if(routine_id != -1):
+                formated_test = Test.format_save_test(test)
+                t_id = Test.get_or_create_test_id(formated_test)
+                formated_result = Result.format_save_json(test_result, protocol, ping, t_id, server, routine_id)
+                Result.database.insert(formated_result)
 
             results.append(test_result)
-            #print(self.databaser.fetch_all())
-            #print(self.databaset.fetch_all())
-        #print(results)
+
         return {"results": results}
     
-    def agendar_execucao_para(self, hora: int, minuto: int):
+    def agendar_execucao_servidor(self, hora: int, minuto: int):
+        print("Agendando execução...")
+        
+        # Caminho para a raiz do projeto (ajuste se necessário)
+        raiz_projeto = "/home/pedro/Documents/OpenRAM/OpenRan5G"
+
+        # Corrige horário para executar 1 minuto antes
+        horario = datetime(2024, 1, 1, hora, minuto) - timedelta(minutes=2)
+        hora_agendada = horario.hour
+        minuto_agendado = horario.minute
+
+        # Linha de agendamento com python -m e cd para o diretório do projeto
+        cron_linha = (
+            f"{minuto_agendado} {hora_agendada} * * * cd {raiz_projeto} && "
+            f"/usr/bin/python3 -m backend.ServerRoutine # agendado_auto"
+        )
+
+        # Lê a crontab atual
+        crontab_atual = os.popen("crontab -l 2>/dev/null").read()
+
+        if cron_linha in crontab_atual:
+            print("Execução já agendada.")
+            return
+
+        # Adiciona nova linha
+        nova_crontab = crontab_atual + f"\n{cron_linha}\n"
+        with os.popen("crontab -", "w") as cron:
+            cron.write(nova_crontab)
+
+        print(f"Script agendado para {hora_agendada:02d}:{minuto_agendado:02d} diariamente com 'python -m'.")
+
+    def agendar_execucao_cliente(self, hora: int, minuto: int):
         print("Agendando execução...")
         
         # Caminho para a raiz do projeto (ajuste se necessário)
