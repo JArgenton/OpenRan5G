@@ -15,6 +15,41 @@ class Result:
             if formatted:  
                 formated_results.append(formatted)
         return {"results": formated_results}
+
+    @staticmethod
+    def get_test_results_by_interval(test_id, start_time, end_time):
+        """
+        Retorna os resultados de teste com base no TEST_ID e intervalo de horário (HH:MM) da rotina.
+        """
+        sql = """
+        SELECT 
+            RESULT_ID, r.ROUTINE_ID, TEST_ID, TIMESTAMP_RESULT, res.SERVER,
+            MIN_LATENCY, AVG_LATENCY, MAX_LATENCY, LOST_PACKETS, LOST_PERCENT,
+            BITS_PER_SECOND, BYTES_TRANSFERED, JITTER, RETRANSMITS
+        FROM resultados res
+        JOIN rotinas r ON res.ROUTINE_ID = r.ROUTINE_ID
+        WHERE TEST_ID = ?
+        AND TIME(r.TIME) BETWEEN TIME(?) AND TIME(?)
+        """
+        Result.database._cur.execute(sql, (test_id, start_time, end_time))
+        return Result.database._cur.fetchall()
+    
+
+    @staticmethod
+    def get_test_results_by_routineID(routine_id, test_id):
+        sql = """
+        SELECT 
+            RESULT_ID, r.ROUTINE_ID, TEST_ID, TIMESTAMP_RESULT, res.SERVER,
+            MIN_LATENCY, AVG_LATENCY, MAX_LATENCY, LOST_PACKETS, LOST_PERCENT,
+            BITS_PER_SECOND, BYTES_TRANSFERED, JITTER, RETRANSMITS
+        FROM resultados res
+        JOIN rotinas r ON res.ROUTINE_ID = r.ROUTINE_ID
+        WHERE TEST_ID = ?
+        AND r.ROUTINE_ID = ?
+        """
+
+        Result.database._cur.execute(sql, (test_id, routine_id))
+        return Result.database._cur.fetchall()
     
     @staticmethod
     def format_save_json(result, protocol, ping, id, server: str, routine_id: int = -1):
@@ -129,5 +164,14 @@ class Result:
         #print(result)
 
         return result
-
     
+    @staticmethod
+    def delete_results_by_routine(routine_id: int):
+        sql = "DELETE FROM resultados WHERE ROUTINE_ID = ?"
+        Result.database._cur.execute(sql, (routine_id,))
+        Result.database._conn.commit()
+
+
+if __name__ == "__main__":
+    print(Result.get_test_results_by_interval(2, "00:15", "23:59"))
+    print(Result.get_test_results_by_routineID(3, 2))
