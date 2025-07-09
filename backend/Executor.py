@@ -116,6 +116,9 @@ class Executor:
             formated_tests.append(Test.format_save_test(test))
         Routine.create_routine_tests(rtParams["params"], formated_tests)
 
+    def deleteRoutine(self, routineID: int):
+        Routine.delete_routine(routineID)
+
     def format_result_for_terminal(self, result: dict) -> str:
         linhas = []
 

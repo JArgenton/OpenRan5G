@@ -3,8 +3,14 @@
         {
             "packetSize": 256,
             "duration": 5,
+            "protocol": "TCP",
+            "pingPackets": 0
+        },
+        {
+            "packetSize": 256,
+            "duration": 10,
             "protocol": "UDP",
-            "pingPackets": 5
+            "pingPackets": 10
         }
     ]
 }
