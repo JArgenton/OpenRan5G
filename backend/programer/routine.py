@@ -76,8 +76,12 @@ class Routine:
             sql = f"DELETE FROM {Routine.routine_table.table_name} WHERE ROUTINE_ID = ?"
             Routine.routine_table._cur.execute(sql, (routineID,))
             Routine.routine_table._conn.commit()
+            
         except ValueError:
             print(f"Erro ao deletar rotina com ID {routineID}")
+            return
+
+        Result.delete_results_by_routine(routineID)
         
     
     @staticmethod
