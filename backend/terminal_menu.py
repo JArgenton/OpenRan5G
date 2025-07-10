@@ -5,6 +5,7 @@ import time
 class Menu:
     def __init__(self):
         self.executor = Executor()
+        self.mainMenu()
 
     def clientMenu(self):
         while True:
@@ -15,7 +16,8 @@ class Menu:
             print("1 - Rodar testes")
             print("2 - Rotinas ")
             print("3 - Histórico de testes")
-            print("4 - Voltar")
+            print("4 - Estatísticas")
+            print("5 - Voltar")
             print("-"*40)
 
             try:
@@ -34,6 +36,9 @@ class Menu:
                 self.data_log()
                 input('\nPressione Enter para continuar...')
             elif choice == 4:
+                self.statistics_menu()
+                input('\nPressione Enter para continuar...')
+            elif choice == 5:
                 return
             else:
                 input("Opção ainda não implementada. Pressione Enter para continuar.")
@@ -294,7 +299,65 @@ class Menu:
         self.executor.deleteRoutine(r_id)
         input(f"\n✅ Rotina {r_id} excluída com sucesso! Pressione Enter para voltar.")
 
+    def statistics_menu(self):
+        while True:
+            os.system("clear")
+            print("📊 ESTATÍSTICAS")
+            print("-" * 40)
+            print("1 - Estatísticas por intervalo de horário")
+            print("2 - Estatísticas por rotina")
+            print("3 - Voltar")
+
+            opcao = input(">> Escolha uma opção: ").strip()
+
+            if opcao == '3':
+                return
+
+            # Mapeamento amigável das colunas disponíveis
+            colunas = {
+                "1": ("MIN_LATENCY", "Latência mínima (ms)"),
+                "2": ("AVG_LATENCY", "Latência média (ms)"),
+                "3": ("MAX_LATENCY", "Latência máxima (ms)"),
+                "4": ("LOST_PACKETS", "Pacotes perdidos"),
+                "5": ("LOST_PERCENT", "Perda de pacotes (%)"),
+                "6": ("BITS_PER_SECOND", "Vazão (bits/s)"),
+                "7": ("BYTES_TRANSFERED", "Dados transferidos (bytes)"),
+                "8": ("JITTER", "Jitter (ms)"),
+                "9": ("RETRANSMITS", "Retransmissões (TCP)")
+            }
+
+            print("\n📌 Escolha o parâmetro estatístico:")
+            for k, (coluna, descricao) in colunas.items():
+                print(f"{k} - {descricao}")
+
+            escolha = input(">> ").strip()
+            if escolha not in colunas:
+                input("❌ Opção inválida. Pressione Enter para voltar.")
+                continue
+
+            coluna_escolhida = colunas[escolha][0]
+
+            try:
+                if opcao == '1':
+                    test_id = int(input("\nID do teste: "))
+                    start_time = input("Hora inicial (HH:MM): ").strip()
+                    end_time = input("Hora final (HH:MM): ").strip()
+                    self.executor.get_statistics_by_interval(test_id, start_time, end_time, coluna_escolhida)
+
+                elif opcao == '2':
+                    routine_id = int(input("\nID da rotina: "))
+                    test_id = int(input("ID do teste da rotina: "))
+                    self.executor.get_statistics_by_routine(routine_id, test_id, coluna_escolhida)
+
+            except ValueError:
+                input("❌ Entrada inválida. Pressione Enter para tentar novamente.")
+
+            input("\nPressione Enter para continuar...")
+
+
+
 
 if __name__ == "__main__":
     menu = Menu()
-    menu.mainMenu()
+    #exec = Executor()
+    #exec.get_statistics_by_interval(2, "00:10", "23:59", "AVG_LATENCY")
