@@ -182,6 +182,19 @@ class Menu:
                 print(f"   Duração: {test['DURATION_SECONDS']}s")
                 print(f"   Tamanho do pacote: {test['PACKET_SIZE']} bytes")
                 print(f"   Nº de pacotes ping: {test['PACKET_COUNT']}")
+        
+        try:
+            t_id = int(input('Selecione o teste que deseja vizualizar os resultados'))
+        except ValueError:
+            print("Entrada inválida")
+            return
+        results = self.executor.getRoutineTestResults(r_id, t_id)["results"]
+
+        if results:
+            for result in results:
+                print(self.executor.format_result_for_terminal(result))
+        else:
+            print("Erro ao obter resultados")
 
         input("\nPressione Enter para voltar.")
 
