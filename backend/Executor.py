@@ -13,7 +13,13 @@ from .database.relacionamentos_R2T import _Relacionamento_R2T as R2T
 import getpass
 from datetime import datetime, timedelta
 from .database.rotinas_DAO import RotinasDAO
+<<<<<<< HEAD
 from .Server_routine import server_routines
+=======
+from .plotting.statistics import Statistician
+from .plotting.Potting import StatisticsPlot
+
+>>>>>>> ce6f73070bd626094c8d58f13e6cd662e9e007a6
 #export interface Test {
   #ip: string,
   #duration: string,
@@ -28,7 +34,8 @@ class Executor:
     def __init__(self):
         self.configuration = Configuration_.getObject()
         self.plotter = Plotter()
-        
+        self.statistic = Statistician()
+        self.statisticPlot = StatisticsPlot()
         
     
     def execute_iperf3(self, server, test):
@@ -126,6 +133,39 @@ class Executor:
 
     def deleteRoutine(self, routineID: int):
         Routine.delete_routine(routineID)
+
+    def get_statistics_by_interval(self, test_id, start_time, end_time, column_name: str):
+        try:
+            results = Result.get_test_results_by_interval(test_id, start_time, end_time)
+            print(f"✅ {len(results)} resultados carregados.")
+
+            self.statistic.load_data(results)
+            print("✅ Dados carregados no Statistician.")
+
+            report = self.statistic.analyze(column_name.upper())
+            print("✅ Estatísticas geradas.")
+            print(report)
+
+            self.statisticPlot.save_report_plot(report)
+        except Exception as e:
+            print("❌ Erro inesperado:", str(e))
+
+    def get_statistics_by_routine(self, routine_id, test_id, column_name: str):
+        try:
+            results = Result.get_test_results_by_routineID(routine_id, test_id)
+            print(f"✅ {len(results)} resultados carregados.")
+
+            self.statistic.load_data(results)
+            print("✅ Dados carregados no Statistician.")
+
+            report = self.statistic.analyze(column_name.upper())
+            print("✅ Estatísticas geradas.")
+            print(report)
+
+            self.statisticPlot.save_report_plot(report)
+        except Exception as e:
+            print("❌ Erro inesperado:", str(e))
+        
 
     def format_result_for_terminal(self, result: dict) -> str:
         linhas = []
