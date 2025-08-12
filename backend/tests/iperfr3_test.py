@@ -5,7 +5,7 @@ from ..configuration.configuration import Configuration_
 import os
 
 class Iperf(ABC):
-    @abstractmethod
+    @staticmethod
     def run_iperf3(server, duration,size=512, protocol="TCP", port=5201):
         """
         Executa o iperf3 e salva os resultados em JSON.
@@ -29,12 +29,12 @@ class Iperf(ABC):
 
         return Iperf.iperf3_output(output, protocol)
     
-    @abstractmethod
+    @staticmethod
     def run_iperf3_server():
         return subprocess.Popen(["iperf3", "-s"])
     
 
-    @abstractmethod
+    @staticmethod
     def stop_iperf3_server(process):
         print("🛑 Encerrando servidor iperf3...")
         process.terminate()
@@ -44,7 +44,7 @@ class Iperf(ABC):
             print("⚠️ Não respondeu, forçando encerramento.")
             process.kill()
 
-    @abstractmethod
+    @staticmethod
     def iperf3_output(data, protocol):
         configuration = Configuration_.getObject()
         metrics = {

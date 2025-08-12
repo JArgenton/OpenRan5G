@@ -230,7 +230,7 @@ class Menu:
             "tests": tests
         }
 
-        self.executor.createRoutine(routine_obj)
+        self.executor.create_routine_client(routine_obj)
         input("\n✅ Rotina criada com sucesso! Pressione Enter para voltar.")
 
     def toggle_routine_status(self):

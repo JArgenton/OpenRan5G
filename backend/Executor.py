@@ -13,7 +13,7 @@ from .database.relacionamentos_R2T import _Relacionamento_R2T as R2T
 import getpass
 from datetime import datetime, timedelta
 from .database.rotinas_DAO import RotinasDAO
-
+from .Server_routine import server_routines
 #export interface Test {
   #ip: string,
   #duration: string,
@@ -105,7 +105,7 @@ class Executor:
             Routine.deactivate_routine_by_time(time)
         Routine.activate_routine(r_id, active)
     
-    def createRoutine(self, rtParams: dict):
+    def create_routine_client(self, rtParams: dict):
         formated_tests = []
         time = rtParams["params"]["time"]
         h,m = map(int, time.split(":"))
@@ -115,6 +115,14 @@ class Executor:
         for test in rtParams["tests"]:
             formated_tests.append(Test.format_save_test(test))
         Routine.create_routine_tests(rtParams["params"], formated_tests)
+        
+
+    def create_routine_server(self,hour, minute):
+        bruh = server_routines.get_instance()
+        hour, minutes = self.configuration.set_round_time(hour,minute)
+        self.agendar_execucao_servidor(hour, minutes)
+        bruh.create_server_routine(hour, minutes)
+        
 
     def deleteRoutine(self, routineID: int):
         Routine.delete_routine(routineID)
@@ -217,7 +225,7 @@ class Executor:
         # Linha de agendamento com python -m e cd para o diretório do projeto
         cron_linha = (
             f"{minuto_agendado} {hora_agendada} * * * cd {raiz_projeto} && "
-            f"/usr/bin/python3 -m backend.ServerRoutine # agendado_auto"
+            f"/usr/bin/python3 -m backend.Server_routine # agendado_auto"
         )
 
         # Lê a crontab atual
@@ -299,7 +307,7 @@ if __name__ == '__main__':
         print("Nenhum teste encontrado no horario atual")
         exit(0)
 
-    print(f"Executando rotina {routine_id} no servidor {server}")
+    print(f"Executando rotina {routine_ command = ["iperf3", "-s"]id} no servidor {server}")
 
     # Busca testes relacionados
     query_rel = f"""SELECT TEST_ID FROM {tabela_r2t.table_name} WHERE ROUTINE_ID = {routine_id}"""

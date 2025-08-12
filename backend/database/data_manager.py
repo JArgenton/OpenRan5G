@@ -6,8 +6,8 @@ class Database_Manager():
         self.connection = None
         self.cursor = None
 
+    @staticmethod
     def get_object():
-
         if Database_Manager._instance is None:
             Database_Manager._instance = Database_Manager()
         """define o cursor e abre connexao"""
@@ -24,7 +24,8 @@ class Database_Manager():
     def close(self):
         """Fecha cursor e conexão, liberando recursos."""
         if self._connection:
-            self._cursor.close()
+            if(self.cursor):
+                self._cursor.close() # type: ignore
             self._connection.close()
             self._connection = None
             self._cursor = None

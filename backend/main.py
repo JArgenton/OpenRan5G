@@ -63,7 +63,7 @@ def plotGraphic(pltConfig: dict):
 @app.post("/api/routine")
 def insertRoutine(rtParams: dict):
     print(rtParams)
-    executor.createRoutine(rtParams)
+    executor.create_routine_client(rtParams)
 
 @app.get("/api/routine/saved")
 def getSavedRoutines():
