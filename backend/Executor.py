@@ -13,13 +13,9 @@ from .database.relacionamentos_R2T import _Relacionamento_R2T as R2T
 import getpass
 from datetime import datetime, timedelta
 from .database.rotinas_DAO import RotinasDAO
-<<<<<<< HEAD
 from .Server_routine import server_routines
-=======
 from .plotting.statistics import Statistician
 from .plotting.Potting import StatisticsPlot
-
->>>>>>> ce6f73070bd626094c8d58f13e6cd662e9e007a6
 #export interface Test {
   #ip: string,
   #duration: string,
@@ -111,6 +107,10 @@ class Executor:
         if(active):
             Routine.deactivate_routine_by_time(time)
         Routine.activate_routine(r_id, active)
+
+    def getSavedRoutines(self):
+        db = server_routines.get_instance()
+        return db.view_saved_routines()
     
     def create_routine_client(self, rtParams: dict):
         formated_tests = []
@@ -125,10 +125,16 @@ class Executor:
         
 
     def create_routine_server(self,hour, minute):
-        bruh = server_routines.get_instance()
+        db = server_routines.get_instance()
         hour, minutes = self.configuration.set_round_time(hour,minute)
+        try:
+            db.create_server_routine(hour, minutes)
+        except:
+            print("Erro ao inserir rotina")
+            return
+        
         self.agendar_execucao_servidor(hour, minutes)
-        bruh.create_server_routine(hour, minutes)
+        
         
 
     def deleteRoutine(self, routineID: int):
@@ -346,8 +352,6 @@ if __name__ == '__main__':
     if routine_id is None:
         print("Nenhum teste encontrado no horario atual")
         exit(0)
-
-    print(f"Executando rotina {routine_ command = ["iperf3", "-s"]id} no servidor {server}")
 
     # Busca testes relacionados
     query_rel = f"""SELECT TEST_ID FROM {tabela_r2t.table_name} WHERE ROUTINE_ID = {routine_id}"""

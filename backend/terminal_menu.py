@@ -57,7 +57,7 @@ class Menu:
 
             if choice == '2':
                 print("\nIniciando servidor iperf3...\n")
-                self.executor.run_server()
+                self.serverRoutineMenu()
             elif choice == '1':
                 self.clientMenu()
             else:
@@ -366,6 +366,73 @@ class Menu:
                 input("❌ Entrada inválida. Pressione Enter para tentar novamente.")
 
             input("\nPressione Enter para continuar...")
+
+    def serverRoutineMenu(self):
+        while True:
+            os.system('clear')
+            print("="*40)
+            print("      ROTINAS AUTOMÁTICAS - SERVIDOR    ")
+            print("="*40)
+            print("1 - Iniciar Servidor")
+            print("2 - Criar rotina de execução")
+            print("3 - Vizualizar rotinas salvas")
+            print("4 - Voltar")
+            print("-"*40)
+
+            choice = input(">> Escolha uma opção: ").strip()
+            
+            if choice == '1':
+                self.executor.run_server()
+            elif choice == '2':
+                self.create_server_routine_interactive()
+            elif choice == '3':
+                self.view_server_routines()
+            elif choice == '4':
+                return
+            else:
+                input("Opção inválida. Pressione Enter para continuar.")
+
+    def view_server_routines(self):
+        os.system("clear")
+        print("="*40)
+        print("      ROTINAS DE SERVIDOR SALVAS       ")
+        print("="*40)
+
+        routines = self.executor.getSavedRoutines()
+
+        if not routines:
+            print("⚠️ Nenhuma rotina de servidor encontrada.")
+        else:
+            print(f"📋 {len(routines)} rotina(s) encontrada(s):\n")
+            for routine in routines:
+                routine_id, time, active = routine
+                print(f"🆔 ID: {routine_id} | Horário: {time} | Ativa: {'Sim' if active else 'Não'}")
+
+        input("\nPressione Enter para voltar.")
+
+
+
+    def create_server_routine_interactive(self):
+        os.system("clear")
+        print("🕒 AGENDAR EXECUÇÃO AUTOMÁTICA DO SERVIDOR")
+        print("-" * 40)
+
+        horario = input("Informe o horário de execução (HH:MM): ").strip()
+
+        try:
+            hora, minuto = map(int, horario.split(":"))
+            if not (0 <= hora <= 23 and 0 <= minuto <= 59):
+                raise ValueError()
+        except ValueError:
+            input("❌ Horário inválido. Pressione Enter para voltar.")
+            return
+
+        try:
+            self.executor.create_routine_server(hora, minuto)
+            input(f"✅ Rotina criada para {hora:02d}:{minuto:02d}. Pressione Enter para continuar.")
+        except Exception as e:
+            input(f"❌ Erro ao criar rotina: {e}. Pressione Enter para continuar.")
+
 
 
 
