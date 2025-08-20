@@ -1,3 +1,10 @@
 {
-    "tests": []
+    "tests": [
+        {
+            "packetSize": 512,
+            "duration": 15,
+            "protocol": "TCP",
+            "pingPackets": 5
+        }
+    ]
 }

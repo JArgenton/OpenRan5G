@@ -16,6 +16,7 @@ from .database.rotinas_DAO import RotinasDAO
 from .Server_routine import server_routines
 from .plotting.statistics import Statistician
 from .plotting.Potting import StatisticsPlot
+from pathlib import Path
 #export interface Test {
   #ip: string,
   #duration: string,
@@ -261,7 +262,7 @@ class Executor:
         print("Agendando execução...")
         
         # Caminho para a raiz do projeto (ajuste se necessário)
-        raiz_projeto = "/home/pedro/Documents/OpenRAM/OpenRan5G"
+        raiz_projeto = Path(__file__).resolve().parent.parent
 
         # Corrige horário para executar 1 minuto antes
         horario = datetime(2024, 1, 1, hora, minuto) - timedelta(minutes=2)
@@ -292,7 +293,8 @@ class Executor:
         print("Agendando execução...")
         
         # Caminho para a raiz do projeto (ajuste se necessário)
-        raiz_projeto = "/home/pedro/Documents/OpenRAM/OpenRan5G"
+        raiz_projeto = Path(__file__).resolve().parent.parent
+        print(raiz_projeto)
 
         # Corrige horário para executar 1 minuto antes
         horario = datetime(2024, 1, 1, hora, minuto) - timedelta(minutes=1)
